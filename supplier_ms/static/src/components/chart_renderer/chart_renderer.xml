@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="supplier_ms.ChartRenderer">
+        <div class="chart-container" t-attf-style="height: #{props.height || 300}px">
+            <canvas t-ref="canvas"></canvas>
+        </div>
+    </t>
+</templates> 

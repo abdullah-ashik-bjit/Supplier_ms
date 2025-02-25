@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Inherit Vendor Form View -->
+    <record id="view_partner_supplier_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.supplier.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Add supplier_rank field (hidden) -->
+            <field name="vat" position="after">
+                <field name="supplier_rank" invisible="1"/>
+            </field>
+
+            <notebook position="inside">
+                <page string="Company Other Information" 
+                      invisible="not supplier_rank and not company_registered_address and not company_alternate_address and not company_type_category and not trade_license_number and not tax_identification_number">
+                    <group>
+                        <group string="Company Other Details">
+                            <field name="company_registered_address"/>
+                            <field name="company_alternate_address"/>
+                            <field name="company_type_category"/>
+                            <field name="trade_license_number"/>
+                            <field name="tax_identification_number"/>
+                        </group>
+                        <group string="Dates">
+                            <field name="commencement_date"/>
+                            <field name="expiry_date"/>
+                        </group>
+                    </group>
+                </page>
+
+                <page string="Certification" 
+                      invisible="not supplier_rank and not certificate_name and not certificate_number and not certifying_body">
+                    <group>
+                        <group string="Certificate Details">
+                            <field name="certificate_name"/>
+                            <field name="certificate_number"/>
+                            <field name="certifying_body"/>
+                        </group>
+                        <group string="Certificate Dates">
+                            <field name="award_date"/>
+                            <field name="cert_expiry_date"/>
+                        </group>
+                    </group>
+                </page>
+
+                <page string="Documents" 
+                      invisible="not supplier_rank and not trade_license_business_registration and not certificate_of_incorporation and not certificate_of_good_standing and not establishment_card and not vat_tax_certificate">
+                    <group>
+                        <group string="Legal Documents">
+                            <field name="trade_license_business_registration" widget="binary"/>
+                            <field name="certificate_of_incorporation" widget="binary"/>
+                            <field name="certificate_of_good_standing" widget="binary"/>
+                            <field name="establishment_card" widget="binary"/>
+                            <field name="vat_tax_certificate" widget="binary"/>
+                        </group>
+                        <group string="Additional Documents">
+                            <field name="memorandum_of_association" widget="binary"/>
+                            <field name="identification_document_for_authorized_person" widget="binary"/>
+                            <field name="bank_letter_indicating_bank_account" widget="binary"/>
+                            <field name="past_2_years_audited_financial_statements" widget="binary"/>
+                            <field name="other_certifications" widget="binary"/>
+                        </group>
+                    </group>
+                </page>
+
+                <page string="Client References" 
+                      invisible="not supplier_rank and not client_reference_ids">
+                    <field name="client_reference_ids">
+                        <tree editable="bottom">
+                            <field name="client_name"/>
+                            <field name="client_email"/>
+                            <field name="client_phone"/>
+                            <field name="client_address"/>
+                        </tree>
+                    </field>
+                </page>
+
+                <page string="Signatory" 
+                      invisible="not supplier_rank and not signatory_name and not authorized_signatory and not company_stamp">
+                    <group>
+                        <group string="Signatory Details">
+                            <field name="signatory_name" required="supplier_rank > 0"/>
+                            <field name="authorized_signatory" required="supplier_rank > 0"/>
+                            <field name="company_stamp" widget="binary" required="supplier_rank > 0"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+<!--    &lt;!&ndash; Add action for supplier view &ndash;&gt;-->
+<!--    <record id="action_view_supplier" model="ir.actions.act_window">-->
+<!--        <field name="name">Suppliers</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">res.partner</field>-->
+<!--        <field name="view_mode">tree,form</field>-->
+<!--        <field name="domain">[('supplier_rank', '>', 0)]</field>-->
+<!--        <field name="context">{'default_supplier_rank': 1}</field>-->
+<!--    </record>-->
+
+</odoo>

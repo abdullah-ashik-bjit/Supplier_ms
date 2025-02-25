@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- RFP Submitted Template -->
+        <record id="email_template_rfp_submitted" model="mail.template">
+            <field name="name">RFP: Submitted Notification</field>
+            <field name="model_id" ref="model_purchase_rfp"/>
+            <field name="subject">RFP {{object.name}} Submitted for Approval</field>
+            <field name="email_from">{{object.create_uid.email}}</field>
+            <field name="email_to">{{ctx.get('email_to')}}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear Approver</p>
+                    <p>The RFP <t t-esc="object.name"/> has been submitted for your approval.</p>
+                    <p>You can view the RFP from the following link:</p>
+                    <div style="margin: 16px 0px 16px 0px;">
+                        <a href="/web#id=${object.id}&amp;model=purchase.rfp&amp;view_type=form"
+                           style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                            View RFP
+                        </a>
+                    </div>
+                </div>
+            </field>
+        </record>
+
+        <!-- RFP Approved Template -->
+        <record id="email_template_rfp_approved" model="mail.template">
+            <field name="name">RFP: Approved Notification</field>
+            <field name="model_id" ref="model_purchase_rfp"/>
+            <field name="subject">RFP ${object.name} Has Been Approved</field>
+            <!--            <field name="email_from">${user.email_formatted | safe}</field>-->
+            <field name="email_from">abdullah958574332@gmail.com</field>
+            <field name="partner_to">${object.create_uid.partner_id.id}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear ${object.create_uid.name},</p>
+                    <p>Your RFP ${object.name} has been approved.</p>
+                    <p>The RFP is now open for supplier quotations.</p>
+                    <div style="margin: 16px 0px 16px 0px;">
+                        <a href="/web#id=${object.id}&amp;model=purchase.rfp&amp;view_type=form"
+                           style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                            View RFP
+                        </a>
+                    </div>
+                </div>
+            </field>
+        </record>
+
+        <!-- RFP Rejected Template -->
+        <record id="email_template_rfp_rejected" model="mail.template">
+            <field name="name">RFP: Rejection Notification</field>
+            <field name="model_id" ref="model_purchase_rfp"/>
+            <field name="subject">RFP ${object.name} Has Been Rejected</field>
+            <field name="email_from">abdullah958574332@gmail.com</field>
+            <field name="email_to">${object.user_id.email_formatted}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Dear ${object.user_id.name},</p>
+                    <p>Your RFP ${object.name} has been rejected.</p>
+                    <p>
+                        <strong>Rejection Reason:</strong>
+                    </p>
+                    <p>${object.approver_comments or 'No reason provided.'}</p>
+                    <br/>
+                    <p>You can review the RFP in the system.</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- RFP Supplier Notification Template -->
+        <record id="email_template_rfp_to_suppliers" model="mail.template">
+            <field name="name">RFP: New RFP Available</field>
+            <field name="model_id" ref="model_purchase_rfp"/>
+            <field name="subject">New RFP Available: ${object.name}</field>
+            <!--            <field name="email_from">${user.email_formatted | safe}</field>-->
+            <field name="email_from">abdullah958574332@gmail.com</field>
+            <field name="email_to">${object.supplier_ids.mapped('email_formatted')}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear Supplier,</p>
+                    <p>A new Request for Purchase (${object.name}) is available for quotation.</p>
+                    <p>Required Date: ${object.required_date}</p>
+                    <p>You can submit your quotation through the supplier portal:</p>
+                    <div style="margin: 16px 0px 16px 0px;">
+                        <a href="/my/rfp/${object.id}"
+                           style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                            Submit Quotation
+                        </a>
+                    </div>
+                </div>
+            </field>
+        </record>
+
+        <!-- RFP Recommendation Template -->
+        <record id="email_template_rfp_recommendation" model="mail.template">
+            <field name="name">RFP: Recommendation Notification</field>
+            <field name="model_id" ref="model_purchase_rfp"/>
+            <field name="subject">RFP ${object.name} - Recommendation for Review</field>
+            <field name="email_from">abdullah958574332@gmail.com</field>
+            <field name="email_to">${object.create_uid.email}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Dear ${object.create_uid.name},</p>
+                    <p>RFP ${object.name} has been reviewed and a supplier has been recommended for your approval.</p>
+                    <p>Please review the recommendation at your earliest convenience.</p>
+                    <br/>
+                    <p>Best regards,</p>
+                    <p>${user.name}</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- RFQ Submitted Template -->
+        <record id="email_template_rfq_submitted" model="mail.template">
+            <field name="name">RFQ: Quotation Submitted</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="subject">New Quotation Submitted for RFP ${ctx.get('rfp_name')}</field>
+            <field name="email_from">abdullah958574332@gmail.com</field>
+            <field name="email_to">${object.rfp_id.user_id.email_formatted}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Dear ${object.rfp_id.user_id.name},</p>
+                    <p>A new quotation has been submitted for RFP ${ctx.get('rfp_name')} by
+                        ${ctx.get('supplier_name')}.
+                    </p>
+                    <p>Details:</p>
+                    <ul>
+                        <li>Expected Delivery: ${object.expected_delivery_date}</li>
+                        <li>Warranty Period: ${object.warranty_period} months</li>
+                        <li>Total Amount: ${format_amount(object.amount_total, object.currency_id)}</li>
+                    </ul>
+                    <br/>
+                    <p>You can review this quotation in the backend system.</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- RFP Supplier Selected Template -->
+        <record id="email_template_rfp_supplier_selected" model="mail.template">
+            <field name="name">RFP: Supplier Selected</field>
+            <field name="model_id" ref="model_purchase_rfp"/>
+            <field name="subject">Your Quotation Selected for RFP ${object.name}</field>
+            <field name="email_from">abdullah958574332@gmail.com</field>
+            <field name="email_to">${object.approved_supplier_id.email}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Dear ${object.approved_supplier_id.name},</p>
+                    <p>Your quotation has been selected for RFP ${object.name}.</p>
+                    <p>A purchase order ${ctx.get('purchase_order')} has been created and will be sent to you shortly.
+                    </p>
+                    <br/>
+                    <p>Best regards,</p>
+                    <p>${object.user_id.name}</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Supplier Approval Email Template -->
+        <record id="email_template_supplier_approval" model="mail.template">
+            <field name="name">Supplier Application: Approval Notification</field>
+            <field name="model_id" ref="model_supplier_application"/>
+            <field name="subject">Supplier Application {{object.name}} Approved</field>
+            <field name="email_from">{{object.company_id.email}}</field>
+            <field name="email_to">{{ctx.get('email_to')}}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear {{object.primary_contact_name}}</p>
+                    <p>Your supplier application has been approved.</p>
+                    <p>You can now access the supplier portal with the following credentials:</p>
+                    
+                    <div style="margin: 16px 0px 16px 0px;">
+                        <p>Username: {{object.email}}</p>
+                        <p>Password: {{ctx.get('password')}}</p>
+                    </div>
+                    
+                    <div style="margin: 16px 0px 16px 0px;">
+                        <a href="/web/login"
+                           style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                            Access Supplier Portal
+                        </a>
+                    </div>
+                    
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        For security reasons, please change your password after your first login.
+                    </p>
+                    
+                    <p style="margin: 16px 0px 16px 0px;">
+                        If you have any questions or need assistance, please don't hesitate to contact us.
+                    </p>
+                    
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Best regards,<br/>
+                        {{user.company_id.name}}
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!-- RFP Accepted Template -->
+        <record id="email_template_rfp_accepted" model="mail.template">
+            <field name="name">RFP: Final Acceptance</field>
+            <field name="model_id" ref="model_purchase_rfp"/>
+            <field name="subject">RFP ${object.name} - Final Acceptance</field>
+            <field name="email_from">abdullah958574332@gmail.com</field>
+            <field name="email_to">${object.create_uid.email}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Dear ${object.create_uid.name},</p>
+                    <p>The RFP ${object.name} has been finalized and accepted.</p>
+                    <p>Selected Supplier: ${object.approved_supplier_id.name}</p>
+                    <p>Purchase Order: ${object.selected_po_id.name}</p>
+                    <br/>
+                    <p>Best regards,</p>
+                    <p>${user.name}</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Supplier Registration Notification Template -->
+        <record id="email_template_supplier_registration_notification" model="mail.template">
+            <field name="name">Supplier Registration: Reviewer Notification</field>
+            <field name="model_id" ref="model_supplier_application"/>
+            <field name="subject">New Supplier Registration: ${object.company_name}</field>
+            <field name="email_from">${user.company_id.email|safe}</field>
+            <field name="partner_to">${ctx.get('reviewer_email', '')}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear ${ctx.get('reviewer_name', 'Reviewer')},</p>
+                    <p>A new supplier registration application has been submitted for your review.</p>
+                    
+                    <div style="margin: 16px 0px;">
+                        <strong>Company Details:</strong>
+                        <ul>
+                            <li>Company Name: ${object.company_name}</li>
+                            <li>Company Type: ${object.company_type}</li>
+                            <li>Email: ${object.email}</li>
+                            <li>Submission Date: ${format_date(object.create_date)}</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Please review the application at your earliest convenience.</p>
+                    
+                    <div style="margin: 16px 0px;">
+                        <a href="/web#id=${object.id}&amp;model=supplier.application&amp;view_type=form"
+                           style="background-color: #875A7B; padding: 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;">
+                            View Application
+                        </a>
+                    </div>
+                    
+                    <p>Best regards,<br/>${user.company_id.name}</p>
+                </div>
+            </field>
+            <field name="lang">${object.create_uid.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- Final Approval Notification Template -->
+        <record id="email_template_final_approval_notification" model="mail.template">
+            <field name="name">Supplier Application: Final Approval Notification</field>
+            <field name="model_id" ref="model_supplier_application"/>
+            <field name="subject">Supplier Application ${object.company_name} - Final Approval Stage</field>
+            <field name="email_from">${user.company_id.email|safe}</field>
+            <field name="email_to">${ctx.get('email_to')}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear ${ctx.get('approver_name', 'Approver')},</p>
+                    <p>A supplier application has been reviewed and is ready for final approval.</p>
+                    
+                    <div style="margin: 16px 0px;">
+                        <strong>Application Details:</strong>
+                        <ul>
+                            <li>Company: {{ object.company_name }}</li>
+                            <li>Email: {{ object.email }}</li>
+                            <li>Reviewer Comments: {{ object.reviewer_comments or 'No comments' }}</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin: 16px 0px;">
+                        <a t-att-href="/web#id={{ object.id }}&amp;model=supplier.application&amp;view_type=form"
+                           style="background-color: #875A7B; padding: 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;">
+                            Review Application
+                        </a>
+                    </div>
+                    
+                    <p>Best regards,<br/>{{ user.company_id.name }}</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Final Rejection Template -->
+        <record id="email_template_final_rejection" model="mail.template">
+            <field name="name">Supplier Application: Final Rejection</field>
+            <field name="model_id" ref="model_supplier_application"/>
+            <field name="subject">Supplier Application Status Update - {{ object.company_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear {{ object.company_name }},</p>
+                    <p>After careful review, we regret to inform you that your supplier application has been rejected.</p>
+                    
+                    {% if object.approver_comments %}
+                    <p>Reason: {{ object.approver_comments }}</p>
+                    {% endif %}
+                    
+                    <p>If you have any questions, please contact our support team.</p>
+                    <br/>
+                    <p>Best regards,<br/>{{ user.company_id.name }}</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- RFP Closure Notification -->
+        <record id="email_template_rfp_closure" model="mail.template">
+            <field name="name">RFP: Closure Notification</field>
+            <field name="model_id" ref="model_purchase_rfp"/>
+            <field name="subject">RFP {{ object.name }} - Closed</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear Supplier,</p>
+                    <p>The RFP {{ object.name }} has been closed.</p>
+                    <p>Thank you for your participation.</p>
+                    <br/>
+                    <p>Best regards,<br/>{{ user.company_id.name }}</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Quotation Rejection Template -->
+        <record id="email_template_quotation_rejection" model="mail.template">
+            <field name="name">RFP: Quotation Rejection</field>
+            <field name="model_id" ref="model_purchase_rfp"/>
+            <field name="subject">Quotation Status Update - RFP {{ object.name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear Supplier,</p>
+                    <p>We regret to inform you that your quotation for RFP {{ object.name }} has not been selected.</p>
+                    <p>Thank you for your participation.</p>
+                    <br/>
+                    <p>Best regards,<br/>{{ user.company_id.name }}</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Review Approval Notification Template -->
+        <record id="email_template_review_approval_notification" model="mail.template">
+            <field name="name">Supplier Application: Review Approval</field>
+            <field name="model_id" ref="model_supplier_application"/>
+            <field name="subject">Supplier Application {{object.company_name}} - Review Approved</field>
+            <field name="email_from">{{ctx.get('email_from')}}</field>
+            <field name="email_to">{{ctx.get('email_to')}}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear {{ctx.get('approver_name', 'Approver')}},</p>
+                    <p>A supplier application has been reviewed and approved by the reviewer. Your final approval is required.</p>
+                    
+                    <div style="margin: 16px 0px;">
+                        <strong>Application Details:</strong>
+                        <ul>
+                            <li>Company: {{object.company_name}}</li>
+                            <li>Email: {{object.email}}</li>
+                            <li>Submission Date: {{format_date(object.create_date)}}</li>
+                            <li>Reviewer: {{object.write_uid.name}}</li>
+                            <li>Review Date: {{format_date(object.write_date)}}</li>
+                            <li>Reviewer Comments: {{object.reviewer_comments or 'No comments'}}</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="margin: 16px 0px;">
+                        <a href="/web#id={{object.id}}&amp;model=supplier.application&amp;view_type=form"
+                           style="background-color: #875A7B; padding: 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;">
+                            Review Application
+                        </a>
+                    </div>
+                    
+                    <p>Best regards,<br/>{{user.company_id.name}}</p>
+                </div>
+            </field>
+            <field name="lang">{{object.create_uid.lang}}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo> 

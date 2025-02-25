@@ -1,0 +1,749 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- First Demo Supplier Application -->
+        <record id="demo_supplier_app_1" model="supplier.application">
+            <!-- Company Information -->
+            <field name="company_name">Tech Solutions LLC</field>
+            <field name="company_address">123 Tech Park, Silicon Valley, CA 94025</field>
+            <field name="email">contact@techsolutions.com</field>
+            <field name="company_type">llc</field>
+            <field name="company_logo" type="base64" file="supplier_ms/static/demo/sample_logo.png"/>
+            <field name="trade_license_number">TL123456789</field>
+            <field name="tax_identification_number">1234567890123456</field>
+            <field name="commencement_date" eval="(DateTime.now() - relativedelta(years=2)).strftime('%Y-%m-%d')"/>
+            <field name="expiry_date" eval="(DateTime.now() + relativedelta(years=3)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Primary Contact -->
+            <field name="primary_contact_name">John Smith</field>
+            <field name="primary_contact_email">john.smith@techsolutions.com</field>
+            <field name="primary_contact_phone">+1 650-123-4567</field>
+            <field name="primary_contact_address">123 Tech Park, Silicon Valley, CA 94025</field>
+            
+            <!-- Finance Contact -->
+            <field name="finance_contact_name">Sarah Johnson</field>
+            <field name="finance_contact_email">sarah.j@techsolutions.com</field>
+            <field name="finance_contact_phone">+1 650-123-4568</field>
+            <field name="finance_contact_address">123 Tech Park, Finance Department, CA 94025</field>
+            
+            <!-- Authorized Contact -->
+            <field name="authorized_contact_name">Michael Brown</field>
+            <field name="authorized_contact_email">m.brown@techsolutions.com</field>
+            <field name="authorized_contact_phone">+1 650-123-4569</field>
+            <field name="authorized_contact_address">123 Tech Park, Executive Suite, CA 94025</field>
+            
+            <!-- Bank Information -->
+            <field name="bank_name">Silicon Valley Bank</field>
+            <field name="bank_address">3003 Tasman Drive, Santa Clara, CA 95054</field>
+            <field name="bank_swift_code">SVBKUS6S</field>
+            <field name="bank_account_name">Tech Solutions LLC</field>
+            <field name="bank_account_number">1234567890</field>
+            <field name="iban">US123456789012345678901234</field>
+
+            <!-- Client References -->
+            <field name="client_1_name">Innovate Technologies Inc</field>
+            <field name="client_1_email">contact@innovatetech.com</field>
+            <field name="client_1_phone">+1 408-555-0123</field>
+            <field name="client_1_address">789 Innovation Drive, San Jose, CA 95110</field>
+
+            <field name="client_2_name">Digital Solutions Corp</field>
+            <field name="client_2_email">info@digitalsolutions.com</field>
+            <field name="client_2_phone">+1 415-555-0124</field>
+            <field name="client_2_address">321 Tech Boulevard, San Francisco, CA 94105</field>
+
+            <field name="client_3_name">Cloud Systems Ltd</field>
+            <field name="client_3_email">info@cloudsystems.com</field>
+            <field name="client_3_phone">+1 650-555-0125</field>
+            <field name="client_3_address">456 Cloud Street, Mountain View, CA 94043</field>
+
+            <field name="client_4_name">Data Analytics Co</field>
+            <field name="client_4_email">contact@dataanalytics.com</field>
+            <field name="client_4_phone">+1 408-555-0126</field>
+            <field name="client_4_address">789 Data Drive, Palo Alto, CA 94301</field>
+
+            <field name="client_5_name">AI Solutions Inc</field>
+            <field name="client_5_email">info@aisolutions.com</field>
+            <field name="client_5_phone">+1 415-555-0127</field>
+            <field name="client_5_address">101 AI Boulevard, San Francisco, CA 94107</field>
+
+            <!-- Certification Information -->
+            <field name="certificate_name">ISO 9001:2015</field>
+            <field name="certificate_number">ISO9001-2023-12345</field>
+            <field name="certifying_body">Bureau Veritas</field>
+            <field name="award_date" eval="(DateTime.now() - relativedelta(months=6)).strftime('%Y-%m-%d')"/>
+            <field name="cert_expiry_date" eval="(DateTime.now() + relativedelta(years=2)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Legal Documents -->
+            <field name="trade_license" type="base64" file="supplier_ms/static/demo/sample_trade_license.pdf"/>
+            <field name="certificate_of_incorporation" type="base64" file="supplier_ms/static/demo/sample_incorporation.pdf"/>
+            <field name="certificate_of_good_standing" type="base64" file="supplier_ms/static/demo/sample_good_standing.pdf"/>
+            <field name="establishment_card" type="base64" file="supplier_ms/static/demo/sample_establishment.pdf"/>
+            <field name="vat_tax_certificate" type="base64" file="supplier_ms/static/demo/sample_vat.pdf"/>
+            <field name="memorandum_of_association" type="base64" file="supplier_ms/static/demo/sample_memorandum.pdf"/>
+            <field name="identification_document" type="base64" file="supplier_ms/static/demo/sample_id.pdf"/>
+            <field name="bank_letter" type="base64" file="supplier_ms/static/demo/sample_bank_letter.pdf"/>
+            <field name="financial_statements" type="base64" file="supplier_ms/static/demo/sample_financials.pdf"/>
+            <field name="other_certifications" type="base64" file="supplier_ms/static/demo/sample_certifications.pdf"/>
+            <field name="company_stamp" type="base64" file="supplier_ms/static/demo/sample_stamp.png"/>
+
+            <!-- Declaration -->
+            <field name="declaration_confirm">True</field>
+            <field name="signatory_name">Michael Brown</field>
+            <field name="authorized_signatory">Chief Executive Officer</field>
+            
+            <field name="state">submitted</field>
+        </record>
+
+        <!-- Second Demo Application -->
+        <record id="demo_supplier_app_2" model="supplier.application">
+            <!-- Company Information -->
+            <field name="company_name">Global Manufacturing Corp</field>
+            <field name="company_address">456 Industrial Ave, Detroit, MI 48201</field>
+            <field name="email">info@globalmanufacturing.com</field>
+            <field name="company_type">corporation</field>
+            <field name="company_logo" type="base64" file="supplier_ms/static/demo/sample_logo.png"/>
+            <field name="trade_license_number">TL987654321</field>
+            <field name="tax_identification_number">9876543210987654</field>
+            <field name="commencement_date" eval="(DateTime.now() - relativedelta(years=5)).strftime('%Y-%m-%d')"/>
+            <field name="expiry_date" eval="(DateTime.now() + relativedelta(years=2)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Primary Contact -->
+            <field name="primary_contact_name">Emma Wilson</field>
+            <field name="primary_contact_email">emma.w@globalmanufacturing.com</field>
+            <field name="primary_contact_phone">+1 313-987-6543</field>
+            <field name="primary_contact_address">456 Industrial Ave, Detroit, MI 48201</field>
+            
+            <!-- Finance Contact -->
+            <field name="finance_contact_name">Robert Chen</field>
+            <field name="finance_contact_email">r.chen@globalmanufacturing.com</field>
+            <field name="finance_contact_phone">+1 313-987-6544</field>
+            <field name="finance_contact_address">456 Industrial Ave, Finance Wing, Detroit, MI 48201</field>
+            
+            <!-- Authorized Contact -->
+            <field name="authorized_contact_name">David Miller</field>
+            <field name="authorized_contact_email">d.miller@globalmanufacturing.com</field>
+            <field name="authorized_contact_phone">+1 313-987-6545</field>
+            <field name="authorized_contact_address">456 Industrial Ave, Executive Office, Detroit, MI 48201</field>
+            
+            <!-- Bank Information -->
+            <field name="bank_name">Chase Bank</field>
+            <field name="bank_address">270 Park Avenue, New York, NY 10017</field>
+            <field name="bank_swift_code">CHASUS33</field>
+            <field name="bank_account_name">Global Manufacturing Corp</field>
+            <field name="bank_account_number">9876543210</field>
+            <field name="iban">US987654321098765432109876</field>
+
+            <!-- Client References -->
+            <field name="client_1_name">Automotive Excellence Ltd</field>
+            <field name="client_1_email">contact@autoexcel.com</field>
+            <field name="client_1_phone">+1 248-555-0125</field>
+            <field name="client_1_address">567 Auto Row, Auburn Hills, MI 48326</field>
+
+            <field name="client_2_name">Industrial Solutions Group</field>
+            <field name="client_2_email">info@industrialsolutions.com</field>
+            <field name="client_2_phone">+1 313-555-0126</field>
+            <field name="client_2_address">890 Factory Lane, Dearborn, MI 48126</field>
+
+            <field name="client_3_name">Detroit Manufacturing Inc</field>
+            <field name="client_3_email">contact@detroitmfg.com</field>
+            <field name="client_3_phone">+1 313-555-0127</field>
+            <field name="client_3_address">123 Factory Blvd, Detroit, MI 48201</field>
+
+            <field name="client_4_name">Michigan Auto Parts</field>
+            <field name="client_4_email">info@michautoparts.com</field>
+            <field name="client_4_phone">+1 313-555-0128</field>
+            <field name="client_4_address">456 Parts Ave, Warren, MI 48089</field>
+
+            <field name="client_5_name">Great Lakes Industries</field>
+            <field name="client_5_email">contact@greatlakes.com</field>
+            <field name="client_5_phone">+1 313-555-0129</field>
+            <field name="client_5_address">789 Lake Road, Troy, MI 48083</field>
+
+            <!-- Certification Information -->
+            <field name="certificate_name">ISO/TS 16949</field>
+            <field name="certificate_number">TS16949-2023-98765</field>
+            <field name="certifying_body">TUV SUD</field>
+            <field name="award_date" eval="(DateTime.now() - relativedelta(months=8)).strftime('%Y-%m-%d')"/>
+            <field name="cert_expiry_date" eval="(DateTime.now() + relativedelta(years=2)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Legal Documents -->
+            <field name="trade_license" type="base64" file="supplier_ms/static/demo/sample_trade_license.pdf"/>
+            <field name="certificate_of_incorporation" type="base64" file="supplier_ms/static/demo/sample_incorporation.pdf"/>
+            <field name="certificate_of_good_standing" type="base64" file="supplier_ms/static/demo/sample_good_standing.pdf"/>
+            <field name="establishment_card" type="base64" file="supplier_ms/static/demo/sample_establishment.pdf"/>
+            <field name="vat_tax_certificate" type="base64" file="supplier_ms/static/demo/sample_vat.pdf"/>
+            <field name="memorandum_of_association" type="base64" file="supplier_ms/static/demo/sample_memorandum.pdf"/>
+            <field name="identification_document" type="base64" file="supplier_ms/static/demo/sample_id.pdf"/>
+            <field name="bank_letter" type="base64" file="supplier_ms/static/demo/sample_bank_letter.pdf"/>
+            <field name="financial_statements" type="base64" file="supplier_ms/static/demo/sample_financials.pdf"/>
+            <field name="other_certifications" type="base64" file="supplier_ms/static/demo/sample_certifications.pdf"/>
+            <field name="company_stamp" type="base64" file="supplier_ms/static/demo/sample_stamp.png"/>
+
+            <!-- Declaration -->
+            <field name="declaration_confirm">True</field>
+            <field name="signatory_name">David Miller</field>
+            <field name="authorized_signatory">Chief Operations Officer</field>
+            
+            <field name="state">submitted</field>
+        </record>
+
+        <!-- Third Demo Application (Construction Company) -->
+        <record id="demo_supplier_app_3" model="supplier.application">
+            <!-- Company Information -->
+            <field name="company_name">BuildPro Construction Ltd</field>
+            <field name="company_address">789 Construction Way, Houston, TX 77001</field>
+            <field name="email">contact@buildpro.com</field>
+            <field name="company_type">corporation</field>
+            <field name="company_logo" type="base64" file="supplier_ms/static/demo/sample_logo.png"/>
+            <field name="trade_license_number">TL345678912</field>
+            <field name="tax_identification_number">3456789123456789</field>
+            <field name="commencement_date" eval="(DateTime.now() - relativedelta(years=3)).strftime('%Y-%m-%d')"/>
+            <field name="expiry_date" eval="(DateTime.now() + relativedelta(years=2)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Primary Contact -->
+            <field name="primary_contact_name">Richard Martinez</field>
+            <field name="primary_contact_email">r.martinez@buildpro.com</field>
+            <field name="primary_contact_phone">+1 713-555-0130</field>
+            <field name="primary_contact_address">789 Construction Way, Suite 100, Houston, TX 77001</field>
+            
+            <!-- Finance Contact -->
+            <field name="finance_contact_name">Lisa Wong</field>
+            <field name="finance_contact_email">l.wong@buildpro.com</field>
+            <field name="finance_contact_phone">+1 713-555-0131</field>
+            <field name="finance_contact_address">789 Construction Way, Finance Dept, Houston, TX 77001</field>
+            
+            <!-- Authorized Contact -->
+            <field name="authorized_contact_name">James Rodriguez</field>
+            <field name="authorized_contact_email">j.rodriguez@buildpro.com</field>
+            <field name="authorized_contact_phone">+1 713-555-0132</field>
+            <field name="authorized_contact_address">789 Construction Way, Executive Office, Houston, TX 77001</field>
+            
+            <!-- Bank Information -->
+            <field name="bank_name">Wells Fargo</field>
+            <field name="bank_address">1000 Louisiana St, Houston, TX 77002</field>
+            <field name="bank_swift_code">WFBIUS6S</field>
+            <field name="bank_account_name">BuildPro Construction Ltd</field>
+            <field name="bank_account_number">3456789012</field>
+            <field name="iban">US345678901234567890123</field>
+
+            <!-- Client References -->
+            <field name="client_1_name">Houston Development Corp</field>
+            <field name="client_1_email">projects@houstondev.com</field>
+            <field name="client_1_phone">+1 713-555-0133</field>
+            <field name="client_1_address">100 Development Plaza, Houston, TX 77003</field>
+
+            <field name="client_2_name">Texas Commercial Properties</field>
+            <field name="client_2_email">info@texascommercial.com</field>
+            <field name="client_2_phone">+1 713-555-0134</field>
+            <field name="client_2_address">200 Business Park, Houston, TX 77004</field>
+
+            <field name="client_3_name">Gulf Coast Builders</field>
+            <field name="client_3_email">contracts@gulfcoast.com</field>
+            <field name="client_3_phone">+1 713-555-0135</field>
+            <field name="client_3_address">300 Harbor Drive, Galveston, TX 77550</field>
+
+            <field name="client_4_name">Energy Complex Development</field>
+            <field name="client_4_email">projects@energycomplex.com</field>
+            <field name="client_4_phone">+1 713-555-0136</field>
+            <field name="client_4_address">400 Energy Row, Houston, TX 77005</field>
+
+            <field name="client_5_name">Medical Center Construction</field>
+            <field name="client_5_email">build@medcenter.com</field>
+            <field name="client_5_phone">+1 713-555-0137</field>
+            <field name="client_5_address">500 Medical Circle, Houston, TX 77030</field>
+
+            <!-- Certification Information -->
+            <field name="certificate_name">OSHA Safety Certification</field>
+            <field name="certificate_number">OSHA-2023-34567</field>
+            <field name="certifying_body">OSHA</field>
+            <field name="award_date" eval="(DateTime.now() - relativedelta(months=4)).strftime('%Y-%m-%d')"/>
+            <field name="cert_expiry_date" eval="(DateTime.now() + relativedelta(years=1)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Legal Documents -->
+            <field name="trade_license" type="base64" file="supplier_ms/static/demo/sample_trade_license.pdf"/>
+            <field name="certificate_of_incorporation" type="base64" file="supplier_ms/static/demo/sample_incorporation.pdf"/>
+            <field name="certificate_of_good_standing" type="base64" file="supplier_ms/static/demo/sample_good_standing.pdf"/>
+            <field name="establishment_card" type="base64" file="supplier_ms/static/demo/sample_establishment.pdf"/>
+            <field name="vat_tax_certificate" type="base64" file="supplier_ms/static/demo/sample_vat.pdf"/>
+            <field name="memorandum_of_association" type="base64" file="supplier_ms/static/demo/sample_memorandum.pdf"/>
+            <field name="identification_document" type="base64" file="supplier_ms/static/demo/sample_id.pdf"/>
+            <field name="bank_letter" type="base64" file="supplier_ms/static/demo/sample_bank_letter.pdf"/>
+            <field name="financial_statements" type="base64" file="supplier_ms/static/demo/sample_financials.pdf"/>
+            <field name="other_certifications" type="base64" file="supplier_ms/static/demo/sample_certifications.pdf"/>
+            <field name="company_stamp" type="base64" file="supplier_ms/static/demo/sample_stamp.png"/>
+
+            <!-- Declaration -->
+            <field name="declaration_confirm">True</field>
+            <field name="signatory_name">James Rodriguez</field>
+            <field name="authorized_signatory">Chief Operations Officer</field>
+            
+            <field name="state">submitted</field>
+        </record>
+
+        <!-- Fourth Demo Application (Healthcare Supplies) -->
+        <record id="demo_supplier_app_4" model="supplier.application">
+            <!-- Company Information -->
+            <field name="company_name">MediCare Solutions Inc</field>
+            <field name="company_address">456 Medical Drive, Boston, MA 02115</field>
+            <field name="email">info@medicaresolutions.com</field>
+            <field name="company_type">corporation</field>
+            <field name="company_logo" type="base64" file="supplier_ms/static/demo/sample_logo.png"/>
+            <field name="trade_license_number">TL456789123</field>
+            <field name="tax_identification_number">4567891234567890</field>
+            <field name="commencement_date" eval="(DateTime.now() - relativedelta(years=1)).strftime('%Y-%m-%d')"/>
+            <field name="expiry_date" eval="(DateTime.now() + relativedelta(years=4)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Primary Contact -->
+            <field name="primary_contact_name">Jennifer Chen</field>
+            <field name="primary_contact_email">j.chen@medicaresolutions.com</field>
+            <field name="primary_contact_phone">+1 617-555-0140</field>
+            <field name="primary_contact_address">456 Medical Drive, Suite 200, Boston, MA 02115</field>
+            
+            <!-- Finance Contact -->
+            <field name="finance_contact_name">Mark Thompson</field>
+            <field name="finance_contact_email">m.thompson@medicaresolutions.com</field>
+            <field name="finance_contact_phone">+1 617-555-0141</field>
+            <field name="finance_contact_address">456 Medical Drive, Finance Wing, Boston, MA 02115</field>
+            
+            <!-- Authorized Contact -->
+            <field name="authorized_contact_name">Dr. Sarah Williams</field>
+            <field name="authorized_contact_email">s.williams@medicaresolutions.com</field>
+            <field name="authorized_contact_phone">+1 617-555-0142</field>
+            <field name="authorized_contact_address">456 Medical Drive, Executive Suite, Boston, MA 02115</field>
+            
+            <!-- Bank Information -->
+            <field name="bank_name">Bank of America</field>
+            <field name="bank_address">100 Federal Street, Boston, MA 02110</field>
+            <field name="bank_swift_code">BOFAUS3N</field>
+            <field name="bank_account_name">MediCare Solutions Inc</field>
+            <field name="bank_account_number">4567890123</field>
+            <field name="iban">US456789012345678901234</field>
+
+            <!-- Client References -->
+            <field name="client_1_name">Massachusetts General Hospital</field>
+            <field name="client_1_email">procurement@mgh.org</field>
+            <field name="client_1_phone">+1 617-555-0143</field>
+            <field name="client_1_address">55 Fruit Street, Boston, MA 02114</field>
+
+            <field name="client_2_name">Boston Medical Center</field>
+            <field name="client_2_email">supplies@bmc.org</field>
+            <field name="client_2_phone">+1 617-555-0144</field>
+            <field name="client_2_address">1 Boston Medical Center Place, Boston, MA 02118</field>
+
+            <field name="client_3_name">Beth Israel Hospital</field>
+            <field name="client_3_email">purchasing@bidmc.org</field>
+            <field name="client_3_phone">+1 617-555-0145</field>
+            <field name="client_3_address">330 Brookline Avenue, Boston, MA 02215</field>
+
+            <field name="client_4_name">Tufts Medical Center</field>
+            <field name="client_4_email">supplies@tuftsmc.org</field>
+            <field name="client_4_phone">+1 617-555-0146</field>
+            <field name="client_4_address">800 Washington Street, Boston, MA 02111</field>
+
+            <field name="client_5_name">New England Baptist Hospital</field>
+            <field name="client_5_email">procurement@nebh.org</field>
+            <field name="client_5_phone">+1 617-555-0147</field>
+            <field name="client_5_address">125 Parker Hill Avenue, Boston, MA 02120</field>
+
+            <!-- Certification Information -->
+            <field name="certificate_name">FDA Medical Device Registration</field>
+            <field name="certificate_number">FDA-2023-45678</field>
+            <field name="certifying_body">US FDA</field>
+            <field name="award_date" eval="(DateTime.now() - relativedelta(months=2)).strftime('%Y-%m-%d')"/>
+            <field name="cert_expiry_date" eval="(DateTime.now() + relativedelta(years=1)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Legal Documents -->
+            <field name="trade_license" type="base64" file="supplier_ms/static/demo/sample_trade_license.pdf"/>
+            <field name="certificate_of_incorporation" type="base64" file="supplier_ms/static/demo/sample_incorporation.pdf"/>
+            <field name="certificate_of_good_standing" type="base64" file="supplier_ms/static/demo/sample_good_standing.pdf"/>
+            <field name="establishment_card" type="base64" file="supplier_ms/static/demo/sample_establishment.pdf"/>
+            <field name="vat_tax_certificate" type="base64" file="supplier_ms/static/demo/sample_vat.pdf"/>
+            <field name="memorandum_of_association" type="base64" file="supplier_ms/static/demo/sample_memorandum.pdf"/>
+            <field name="identification_document" type="base64" file="supplier_ms/static/demo/sample_id.pdf"/>
+            <field name="bank_letter" type="base64" file="supplier_ms/static/demo/sample_bank_letter.pdf"/>
+            <field name="financial_statements" type="base64" file="supplier_ms/static/demo/sample_financials.pdf"/>
+            <field name="other_certifications" type="base64" file="supplier_ms/static/demo/sample_certifications.pdf"/>
+            <field name="company_stamp" type="base64" file="supplier_ms/static/demo/sample_stamp.png"/>
+
+            <!-- Declaration -->
+            <field name="declaration_confirm">True</field>
+            <field name="signatory_name">Dr. Sarah Williams</field>
+            <field name="authorized_signatory">Chief Medical Officer</field>
+            
+            <field name="state">submitted</field>
+        </record>
+
+        <!-- Fifth Demo Application (Food Services) -->
+        <record id="demo_supplier_app_5" model="supplier.application">
+            <!-- Company Information -->
+            <field name="company_name">Fresh Foods Distribution LLC</field>
+            <field name="company_address">567 Fresh Market Way, Chicago, IL 60601</field>
+            <field name="email">info@freshfoodsdist.com</field>
+            <field name="company_type">llc</field>
+            <field name="company_logo" type="base64" file="supplier_ms/static/demo/sample_logo.png"/>
+            <field name="trade_license_number">TL567890123</field>
+            <field name="tax_identification_number">5678901234567890</field>
+            <field name="commencement_date" eval="(DateTime.now() - relativedelta(years=2)).strftime('%Y-%m-%d')"/>
+            <field name="expiry_date" eval="(DateTime.now() + relativedelta(years=3)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Primary Contact -->
+            <field name="primary_contact_name">Thomas Anderson</field>
+            <field name="primary_contact_email">t.anderson@freshfoodsdist.com</field>
+            <field name="primary_contact_phone">+1 312-555-0150</field>
+            <field name="primary_contact_address">567 Fresh Market Way, Suite 300, Chicago, IL 60601</field>
+            
+            <!-- Finance Contact -->
+            <field name="finance_contact_name">Patricia Lee</field>
+            <field name="finance_contact_email">p.lee@freshfoodsdist.com</field>
+            <field name="finance_contact_phone">+1 312-555-0151</field>
+            <field name="finance_contact_address">567 Fresh Market Way, Finance Dept, Chicago, IL 60601</field>
+            
+            <!-- Authorized Contact -->
+            <field name="authorized_contact_name">Kevin O'Brien</field>
+            <field name="authorized_contact_email">k.obrien@freshfoodsdist.com</field>
+            <field name="authorized_contact_phone">+1 312-555-0152</field>
+            <field name="authorized_contact_address">567 Fresh Market Way, Executive Office, Chicago, IL 60601</field>
+            
+            <!-- Bank Information -->
+            <field name="bank_name">Northern Trust</field>
+            <field name="bank_address">50 South LaSalle Street, Chicago, IL 60603</field>
+            <field name="bank_swift_code">CNORUS44</field>
+            <field name="bank_account_name">Fresh Foods Distribution LLC</field>
+            <field name="bank_account_number">5678901234</field>
+            <field name="iban">US567890123456789012345</field>
+
+            <!-- Client References -->
+            <field name="client_1_name">Midwest Grocery Chain</field>
+            <field name="client_1_email">purchasing@midwestgrocery.com</field>
+            <field name="client_1_phone">+1 312-555-0153</field>
+            <field name="client_1_address">100 Grocery Lane, Chicago, IL 60602</field>
+
+            <field name="client_2_name">Chicago Public Schools</field>
+            <field name="client_2_email">food.service@cps.edu</field>
+            <field name="client_2_phone">+1 312-555-0154</field>
+            <field name="client_2_address">42 West Madison St, Chicago, IL 60602</field>
+
+            <field name="client_3_name">Illinois State University</field>
+            <field name="client_3_email">dining@ilstu.edu</field>
+            <field name="client_3_phone">+1 309-555-0155</field>
+            <field name="client_3_address">100 University Street, Normal, IL 61761</field>
+
+            <field name="client_4_name">Heartland Hospitals Group</field>
+            <field name="client_4_email">food.services@heartland.org</field>
+            <field name="client_4_phone">+1 312-555-0156</field>
+            <field name="client_4_address">200 Healthcare Blvd, Chicago, IL 60610</field>
+
+            <field name="client_5_name">Lake View Hotels</field>
+            <field name="client_5_email">kitchen@lakeviewhotels.com</field>
+            <field name="client_5_phone">+1 312-555-0157</field>
+            <field name="client_5_address">300 Lakeshore Drive, Chicago, IL 60611</field>
+
+            <!-- Certification Information -->
+            <field name="certificate_name">FDA Food Facility Registration</field>
+            <field name="certificate_number">FFR-2023-56789</field>
+            <field name="certifying_body">US FDA</field>
+            <field name="award_date" eval="(DateTime.now() - relativedelta(months=3)).strftime('%Y-%m-%d')"/>
+            <field name="cert_expiry_date" eval="(DateTime.now() + relativedelta(years=1)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Legal Documents -->
+            <field name="trade_license" type="base64" file="supplier_ms/static/demo/sample_trade_license.pdf"/>
+            <field name="certificate_of_incorporation" type="base64" file="supplier_ms/static/demo/sample_incorporation.pdf"/>
+            <field name="certificate_of_good_standing" type="base64" file="supplier_ms/static/demo/sample_good_standing.pdf"/>
+            <field name="establishment_card" type="base64" file="supplier_ms/static/demo/sample_establishment.pdf"/>
+            <field name="vat_tax_certificate" type="base64" file="supplier_ms/static/demo/sample_vat.pdf"/>
+            <field name="memorandum_of_association" type="base64" file="supplier_ms/static/demo/sample_memorandum.pdf"/>
+            <field name="identification_document" type="base64" file="supplier_ms/static/demo/sample_id.pdf"/>
+            <field name="bank_letter" type="base64" file="supplier_ms/static/demo/sample_bank_letter.pdf"/>
+            <field name="financial_statements" type="base64" file="supplier_ms/static/demo/sample_financials.pdf"/>
+            <field name="other_certifications" type="base64" file="supplier_ms/static/demo/sample_certifications.pdf"/>
+            <field name="company_stamp" type="base64" file="supplier_ms/static/demo/sample_stamp.png"/>
+
+            <!-- Declaration -->
+            <field name="declaration_confirm">True</field>
+            <field name="signatory_name">Kevin O'Brien</field>
+            <field name="authorized_signatory">Managing Director</field>
+            
+            <field name="state">submitted</field>
+        </record>
+
+        <!-- Sixth Demo Application (IT Services) -->
+        <record id="demo_supplier_app_6" model="supplier.application">
+            <!-- Company Information -->
+            <field name="company_name">CloudTech Solutions Corp</field>
+            <field name="company_address">789 Innovation Park, Seattle, WA 98104</field>
+            <field name="email">contact@cloudtechsolutions.com</field>
+            <field name="company_type">corporation</field>
+            <field name="company_logo" type="base64" file="supplier_ms/static/demo/sample_logo.png"/>
+            <field name="trade_license_number">TL678901234</field>
+            <field name="tax_identification_number">6789012345678901</field>
+            <field name="commencement_date" eval="(DateTime.now() - relativedelta(years=1)).strftime('%Y-%m-%d')"/>
+            <field name="expiry_date" eval="(DateTime.now() + relativedelta(years=4)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Primary Contact -->
+            <field name="primary_contact_name">Emily Zhang</field>
+            <field name="primary_contact_email">e.zhang@cloudtechsolutions.com</field>
+            <field name="primary_contact_phone">+1 206-555-0160</field>
+            <field name="primary_contact_address">789 Innovation Park, Suite 400, Seattle, WA 98104</field>
+            
+            <!-- Finance Contact -->
+            <field name="finance_contact_name">Andrew Wilson</field>
+            <field name="finance_contact_email">a.wilson@cloudtechsolutions.com</field>
+            <field name="finance_contact_phone">+1 206-555-0161</field>
+            <field name="finance_contact_address">789 Innovation Park, Finance Wing, Seattle, WA 98104</field>
+            
+            <!-- Authorized Contact -->
+            <field name="authorized_contact_name">Michelle Park</field>
+            <field name="authorized_contact_email">m.park@cloudtechsolutions.com</field>
+            <field name="authorized_contact_phone">+1 206-555-0162</field>
+            <field name="authorized_contact_address">789 Innovation Park, Executive Suite, Seattle, WA 98104</field>
+            
+            <!-- Bank Information -->
+            <field name="bank_name">US Bank</field>
+            <field name="bank_address">1420 Fifth Avenue, Seattle, WA 98101</field>
+            <field name="bank_swift_code">USBKUS44</field>
+            <field name="bank_account_name">CloudTech Solutions Corp</field>
+            <field name="bank_account_number">6789012345</field>
+            <field name="iban">US678901234567890123456</field>
+
+            <!-- Client References -->
+            <field name="client_1_name">Pacific Northwest Tech</field>
+            <field name="client_1_email">it@pnwtech.com</field>
+            <field name="client_1_phone">+1 206-555-0163</field>
+            <field name="client_1_address">100 Tech Avenue, Seattle, WA 98101</field>
+
+            <field name="client_2_name">Seattle Public Schools</field>
+            <field name="client_2_email">technology@seattleschools.org</field>
+            <field name="client_2_phone">+1 206-555-0164</field>
+            <field name="client_2_address">2445 3rd Ave S, Seattle, WA 98134</field>
+
+            <field name="client_3_name">Northwest Healthcare Network</field>
+            <field name="client_3_email">it.dept@nwhealthcare.org</field>
+            <field name="client_3_phone">+1 206-555-0165</field>
+            <field name="client_3_address">300 Hospital Way, Seattle, WA 98195</field>
+
+            <field name="client_4_name">Seattle City Government</field>
+            <field name="client_4_email">tech.support@seattle.gov</field>
+            <field name="client_4_phone">+1 206-555-0166</field>
+            <field name="client_4_address">600 4th Ave, Seattle, WA 98104</field>
+
+            <field name="client_5_name">Emerald City Bank</field>
+            <field name="client_5_email">systems@emeraldbank.com</field>
+            <field name="client_5_phone">+1 206-555-0167</field>
+            <field name="client_5_address">400 Financial District, Seattle, WA 98101</field>
+
+            <!-- Certification Information -->
+            <field name="certificate_name">ISO 27001:2013</field>
+            <field name="certificate_number">ISO27001-2023-67890</field>
+            <field name="certifying_body">BSI Group</field>
+            <field name="award_date" eval="(DateTime.now() - relativedelta(months=1)).strftime('%Y-%m-%d')"/>
+            <field name="cert_expiry_date" eval="(DateTime.now() + relativedelta(years=3)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Legal Documents -->
+            <field name="trade_license" type="base64" file="supplier_ms/static/demo/sample_trade_license.pdf"/>
+            <field name="certificate_of_incorporation" type="base64" file="supplier_ms/static/demo/sample_incorporation.pdf"/>
+            <field name="certificate_of_good_standing" type="base64" file="supplier_ms/static/demo/sample_good_standing.pdf"/>
+            <field name="establishment_card" type="base64" file="supplier_ms/static/demo/sample_establishment.pdf"/>
+            <field name="vat_tax_certificate" type="base64" file="supplier_ms/static/demo/sample_vat.pdf"/>
+            <field name="memorandum_of_association" type="base64" file="supplier_ms/static/demo/sample_memorandum.pdf"/>
+            <field name="identification_document" type="base64" file="supplier_ms/static/demo/sample_id.pdf"/>
+            <field name="bank_letter" type="base64" file="supplier_ms/static/demo/sample_bank_letter.pdf"/>
+            <field name="financial_statements" type="base64" file="supplier_ms/static/demo/sample_financials.pdf"/>
+            <field name="other_certifications" type="base64" file="supplier_ms/static/demo/sample_certifications.pdf"/>
+            <field name="company_stamp" type="base64" file="supplier_ms/static/demo/sample_stamp.png"/>
+
+            <!-- Declaration -->
+            <field name="declaration_confirm">True</field>
+            <field name="signatory_name">Michelle Park</field>
+            <field name="authorized_signatory">Chief Technology Officer</field>
+            
+            <field name="state">submitted</field>
+        </record>
+
+        <!-- Seventh Demo Application (Industrial Equipment) -->
+        <record id="demo_supplier_app_7" model="supplier.application">
+            <!-- Company Information -->
+            <field name="company_name">Industrial Machinery Solutions Inc</field>
+            <field name="company_address">890 Industrial Parkway, Cleveland, OH 44114</field>
+            <field name="email">contact@industrialmachinery.com</field>
+            <field name="company_type">corporation</field>
+            <field name="company_logo" type="base64" file="supplier_ms/static/demo/sample_logo.png"/>
+            <field name="trade_license_number">TL789012345</field>
+            <field name="tax_identification_number">7890123456789012</field>
+            <field name="commencement_date" eval="(DateTime.now() - relativedelta(years=4)).strftime('%Y-%m-%d')"/>
+            <field name="expiry_date" eval="(DateTime.now() + relativedelta(years=2)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Primary Contact -->
+            <field name="primary_contact_name">Robert Steel</field>
+            <field name="primary_contact_email">r.steel@industrialmachinery.com</field>
+            <field name="primary_contact_phone">+1 216-555-0170</field>
+            <field name="primary_contact_address">890 Industrial Parkway, Suite 500, Cleveland, OH 44114</field>
+            
+            <!-- Finance Contact -->
+            <field name="finance_contact_name">Diana Clark</field>
+            <field name="finance_contact_email">d.clark@industrialmachinery.com</field>
+            <field name="finance_contact_phone">+1 216-555-0171</field>
+            <field name="finance_contact_address">890 Industrial Parkway, Finance Dept, Cleveland, OH 44114</field>
+            
+            <!-- Authorized Contact -->
+            <field name="authorized_contact_name">George Harrison</field>
+            <field name="authorized_contact_email">g.harrison@industrialmachinery.com</field>
+            <field name="authorized_contact_phone">+1 216-555-0172</field>
+            <field name="authorized_contact_address">890 Industrial Parkway, Executive Office, Cleveland, OH 44114</field>
+            
+            <!-- Bank Information -->
+            <field name="bank_name">KeyBank</field>
+            <field name="bank_address">127 Public Square, Cleveland, OH 44114</field>
+            <field name="bank_swift_code">KEYBUS33</field>
+            <field name="bank_account_name">Industrial Machinery Solutions Inc</field>
+            <field name="bank_account_number">7890123456</field>
+            <field name="iban">US789012345678901234567</field>
+
+            <!-- Client References -->
+            <field name="client_1_name">Cleveland Steel Works</field>
+            <field name="client_1_email">purchasing@clevelandsteel.com</field>
+            <field name="client_1_phone">+1 216-555-0173</field>
+            <field name="client_1_address">200 Steel Avenue, Cleveland, OH 44115</field>
+
+            <field name="client_2_name">Ohio Manufacturing Group</field>
+            <field name="client_2_email">procurement@ohiomfg.com</field>
+            <field name="client_2_phone">+1 216-555-0174</field>
+            <field name="client_2_address">300 Factory Lane, Akron, OH 44308</field>
+
+            <field name="client_3_name">Great Lakes Industries</field>
+            <field name="client_3_email">equipment@greatlakes.com</field>
+            <field name="client_3_phone">+1 216-555-0175</field>
+            <field name="client_3_address">400 Lake Road, Cleveland, OH 44113</field>
+
+            <field name="client_4_name">Midwest Equipment Corp</field>
+            <field name="client_4_email">orders@midwestequip.com</field>
+            <field name="client_4_phone">+1 216-555-0176</field>
+            <field name="client_4_address">500 Industrial Blvd, Toledo, OH 43604</field>
+
+            <field name="client_5_name">Ohio Valley Fabricators</field>
+            <field name="client_5_email">machinery@ohiovalley.com</field>
+            <field name="client_5_phone">+1 216-555-0177</field>
+            <field name="client_5_address">600 Valley Road, Cincinnati, OH 45202</field>
+
+            <!-- Certification Information -->
+            <field name="certificate_name">ISO 9001:2015 Manufacturing</field>
+            <field name="certificate_number">ISO9001-2023-78901</field>
+            <field name="certifying_body">DNV GL</field>
+            <field name="award_date" eval="(DateTime.now() - relativedelta(months=5)).strftime('%Y-%m-%d')"/>
+            <field name="cert_expiry_date" eval="(DateTime.now() + relativedelta(years=2)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Legal Documents -->
+            <field name="trade_license" type="base64" file="supplier_ms/static/demo/sample_trade_license.pdf"/>
+            <field name="certificate_of_incorporation" type="base64" file="supplier_ms/static/demo/sample_incorporation.pdf"/>
+            <field name="certificate_of_good_standing" type="base64" file="supplier_ms/static/demo/sample_good_standing.pdf"/>
+            <field name="establishment_card" type="base64" file="supplier_ms/static/demo/sample_establishment.pdf"/>
+            <field name="vat_tax_certificate" type="base64" file="supplier_ms/static/demo/sample_vat.pdf"/>
+            <field name="memorandum_of_association" type="base64" file="supplier_ms/static/demo/sample_memorandum.pdf"/>
+            <field name="identification_document" type="base64" file="supplier_ms/static/demo/sample_id.pdf"/>
+            <field name="bank_letter" type="base64" file="supplier_ms/static/demo/sample_bank_letter.pdf"/>
+            <field name="financial_statements" type="base64" file="supplier_ms/static/demo/sample_financials.pdf"/>
+            <field name="other_certifications" type="base64" file="supplier_ms/static/demo/sample_certifications.pdf"/>
+            <field name="company_stamp" type="base64" file="supplier_ms/static/demo/sample_stamp.png"/>
+
+            <!-- Declaration -->
+            <field name="declaration_confirm">True</field>
+            <field name="signatory_name">George Harrison</field>
+            <field name="authorized_signatory">Chief Executive Officer</field>
+            
+            <field name="state">submitted</field>
+        </record>
+
+        <!-- Eighth Demo Application (Laboratory Equipment) -->
+        <record id="demo_supplier_app_8" model="supplier.application">
+            <!-- Company Information -->
+            <field name="company_name">LabTech Precision Equipment Ltd</field>
+            <field name="company_address">123 Research Park, Research Triangle, NC 27709</field>
+            <field name="email">info@labtechprecision.com</field>
+            <field name="company_type">corporation</field>
+            <field name="company_logo" type="base64" file="supplier_ms/static/demo/sample_logo.png"/>
+            <field name="trade_license_number">TL890123456</field>
+            <field name="tax_identification_number">8901234567890123</field>
+            <field name="commencement_date" eval="(DateTime.now() - relativedelta(years=3)).strftime('%Y-%m-%d')"/>
+            <field name="expiry_date" eval="(DateTime.now() + relativedelta(years=3)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Primary Contact -->
+            <field name="primary_contact_name">Alice Cooper</field>
+            <field name="primary_contact_email">a.cooper@labtechprecision.com</field>
+            <field name="primary_contact_phone">+1 919-555-0180</field>
+            <field name="primary_contact_address">123 Research Park, Suite 600, Research Triangle, NC 27709</field>
+            
+            <!-- Finance Contact -->
+            <field name="finance_contact_name">Brian White</field>
+            <field name="finance_contact_email">b.white@labtechprecision.com</field>
+            <field name="finance_contact_phone">+1 919-555-0181</field>
+            <field name="finance_contact_address">123 Research Park, Finance Wing, Research Triangle, NC 27709</field>
+            
+            <!-- Authorized Contact -->
+            <field name="authorized_contact_name">Dr. Elizabeth Taylor</field>
+            <field name="authorized_contact_email">e.taylor@labtechprecision.com</field>
+            <field name="authorized_contact_phone">+1 919-555-0182</field>
+            <field name="authorized_contact_address">123 Research Park, Executive Suite, Research Triangle, NC 27709</field>
+            
+            <!-- Bank Information -->
+            <field name="bank_name">BB&amp;T</field>
+            <field name="bank_address">200 West Second Street, Winston-Salem, NC 27101</field>
+            <field name="bank_swift_code">BRBTUS33</field>
+            <field name="bank_account_name">LabTech Precision Equipment Ltd</field>
+            <field name="bank_account_number">8901234567</field>
+            <field name="iban">US890123456789012345678</field>
+
+            <!-- Client References -->
+            <field name="client_1_name">Duke University Research</field>
+            <field name="client_1_email">lab.equipment@duke.edu</field>
+            <field name="client_1_phone">+1 919-555-0183</field>
+            <field name="client_1_address">Durham, NC 27708</field>
+
+            <field name="client_2_name">NC State Labs</field>
+            <field name="client_2_email">procurement@ncstate.edu</field>
+            <field name="client_2_phone">+1 919-555-0184</field>
+            <field name="client_2_address">2101 Hillsborough Street, Raleigh, NC 27695</field>
+
+            <field name="client_3_name">Research Triangle Institute</field>
+            <field name="client_3_email">equipment@rti.org</field>
+            <field name="client_3_phone">+1 919-555-0185</field>
+            <field name="client_3_address">3040 East Cornwallis Road, Research Triangle Park, NC 27709</field>
+
+            <field name="client_4_name">Carolina Medical Labs</field>
+            <field name="client_4_email">lab.supplies@carolinamedical.org</field>
+            <field name="client_4_phone">+1 919-555-0186</field>
+            <field name="client_4_address">300 Medical Park Drive, Chapel Hill, NC 27517</field>
+
+            <field name="client_5_name">Biotech Research Center</field>
+            <field name="client_5_email">equipment@biotechrc.org</field>
+            <field name="client_5_phone">+1 919-555-0187</field>
+            <field name="client_5_address">400 Science Drive, Durham, NC 27710</field>
+
+            <!-- Certification Information -->
+            <field name="certificate_name">ISO 17025 Laboratory Accreditation</field>
+            <field name="certificate_number">ISO17025-2023-89012</field>
+            <field name="certifying_body">A2LA</field>
+            <field name="award_date" eval="(DateTime.now() - relativedelta(months=7)).strftime('%Y-%m-%d')"/>
+            <field name="cert_expiry_date" eval="(DateTime.now() + relativedelta(years=2)).strftime('%Y-%m-%d')"/>
+            
+            <!-- Legal Documents -->
+            <field name="trade_license" type="base64" file="supplier_ms/static/demo/sample_trade_license.pdf"/>
+            <field name="certificate_of_incorporation" type="base64" file="supplier_ms/static/demo/sample_incorporation.pdf"/>
+            <field name="certificate_of_good_standing" type="base64" file="supplier_ms/static/demo/sample_good_standing.pdf"/>
+            <field name="establishment_card" type="base64" file="supplier_ms/static/demo/sample_establishment.pdf"/>
+            <field name="vat_tax_certificate" type="base64" file="supplier_ms/static/demo/sample_vat.pdf"/>
+            <field name="memorandum_of_association" type="base64" file="supplier_ms/static/demo/sample_memorandum.pdf"/>
+            <field name="identification_document" type="base64" file="supplier_ms/static/demo/sample_id.pdf"/>
+            <field name="bank_letter" type="base64" file="supplier_ms/static/demo/sample_bank_letter.pdf"/>
+            <field name="financial_statements" type="base64" file="supplier_ms/static/demo/sample_financials.pdf"/>
+            <field name="other_certifications" type="base64" file="supplier_ms/static/demo/sample_certifications.pdf"/>
+            <field name="company_stamp" type="base64" file="supplier_ms/static/demo/sample_stamp.png"/>
+
+            <!-- Declaration -->
+            <field name="declaration_confirm">True</field>
+            <field name="signatory_name">Dr. Elizabeth Taylor</field>
+            <field name="authorized_signatory">Chief Scientific Officer</field>
+            
+            <field name="state">submitted</field>
+        </record>
+
+    </data>
+</odoo>

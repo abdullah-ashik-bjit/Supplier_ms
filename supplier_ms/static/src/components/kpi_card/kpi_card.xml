@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="supplier_ms.KPICard">
+        <div class="card shadow-sm h-100" t-attf-class="#{props.color ? 'border-' + props.color : ''}">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div t-if="props.icon" class="me-3">
+                        <i t-attf-class="fa fa-2x #{props.icon}" t-attf-style="color: #{props.color ? 'var(--' + props.color + ')' : 'inherit'}"/>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-1" t-esc="props.title"/>
+                        <h3 class="mb-0">
+                            <t t-esc="props.value"/>
+                            <t t-if="props.suffix" t-esc="props.suffix"/>
+                        </h3>
+                    </div>
+                </div>
+                <div t-if="props.trend !== undefined" class="d-flex align-items-center">
+                    <i t-attf-class="fa #{trendIcon} me-1 #{trendClass}"/>
+                    <span t-attf-class="#{trendClass}">
+                        <t t-esc="Math.abs(props.trend)"/>% from last period
+                    </span>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates> 

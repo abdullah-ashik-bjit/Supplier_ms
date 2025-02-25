@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_form_inherit_rfp" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.rfp</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_ref" position="after">
+                <field name="rfp_id" readonly="1"/>
+                <field name="is_recommended" groups="supplier_ms.group_reviewer"/>
+                <field name="warranty_period" readonly="context.get('from_portal', False)"/>
+                <field name="expected_delivery_date" readonly="context.get('from_portal', False)"/>
+                <field name="terms_conditions" readonly="context.get('from_portal', False)"/>
+                <field name="can_edit_score" invisible="1"/>
+                <field name="score" groups="supplier_ms.group_approver,supplier_ms.group_reviewer"
+                       readonly="not can_edit_score" force_save="1"/>
+            </field>
+            <field name="currency_id" position="replace">
+                <field name="currency_id" groups="base.group_multi_currency" required="1"/>
+            </field>
+            <xpath expr="//group[@class='oe_subtotal_footer']/field[@name='tax_totals']" position="before">
+                <label for="delivery_charges"/>
+                <div class="d-flex">
+                    <field name="delivery_charges"
+                           class="oe_subtotal_footer_separator"
+                           widget="monetary"
+                           readonly="1"
+                           options="{'currency_field': 'currency_id'}"/>
+                </div>
+            </xpath>
+            <xpath expr="//group[@class='oe_subtotal_footer']/field[@name='tax_totals']" position="replace">
+                <label for="amount_total"/>
+                <div class="d-flex">
+                    <field name="amount_total"
+                            class="oe_subtotal_footer_separator"
+                            widget="monetary"
+                            readonly="1"
+                            options="{'currency_field': 'currency_id'}"/>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree" position="attributes">
+                <attribute name="readonly">context.get('from_portal', False)</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='price_unit']" position="attributes">
+                <attribute name="readonly">context.get('from_portal', False)</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='price_unit']" position="after">
+                <field name="delivery_charges" widget="monetary" options="{'currency_field': 'currency_id'}" 
+                       force_save="1" readonly="context.get('from_portal', False)"/>
+            </xpath>
+            <xpath expr="//group[@class='oe_subtotal_footer']" position="replace">
+                <group class="oe_subtotal_footer">
+                    <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="delivery_charges" widget="monetary" options="{'currency_field': 'currency_id'}" force_save="1"/>
+                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                        <label for="amount_total"/>
+                    </div>
+                    <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" 
+                           widget="monetary" options="{'currency_field': 'currency_id'}" force_save="1"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='price_unit']" position="attributes">
+                <attribute name="readonly">context.get('from_portal', False)</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_purchase_order_search_inherit_rfp" model="ir.ui.view">
+        <field name="name">purchase.order.search.inherit.rfp</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="arch" type="xml">
+            <filter name="to_approve" position="after">
+                <filter string="RFP Quotations" name="rfp_quotations" domain="[('rfp_id', '!=', False)]"/>
+                <filter string="Recommended" name="recommended" domain="[('is_recommended', '=', True)]"/>
+            </filter>
+            <filter name="vendor" position="after">
+                <filter string="RFP" name="group_by_rfp" context="{'group_by': 'rfp_id'}"/>
+            </filter>
+        </field>
+    </record>
+    <record id="purchase_order_tree_inherit_rfp" model="ir.ui.view">
+        <field name="name">purchase.order.tree.inherit.rfp</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+        <field name="arch" type="xml">
+            <field name="amount_total" position="before">
+                <field name="rfp_id"/>
+                <field name="warranty_period"/>
+                <field name="score"/>
+                <field name="is_recommended"/>
+            </field>
+        </field>
+    </record>
+</odoo> 

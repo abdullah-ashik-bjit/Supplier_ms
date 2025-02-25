@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--  Module Category for Supplier Management System  -->
+    <record id="module_category_supplier_management" model="ir.module.category">
+        <field name="name">Supplier Management System</field>
+        <field name="description">Manage suppliers and RFPs</field>
+        <field name="sequence" eval="10"/>
+    </record>
+
+    <!--  Reviewer Group  -->
+    <record id="group_reviewer" model="res.groups">
+        <field name="name">Reviewer</field>
+        <field name="category_id" ref="module_category_supplier_management"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!--  Approver Group  -->
+    <record id="group_approver" model="res.groups">
+        <field name="name">Approver</field>
+        <field name="category_id" ref="module_category_supplier_management"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Record Rules -->
+    <!-- Reviewer rule - can only see and manage their own RFPs -->
+    <record id="rule_rfp_reviewer" model="ir.rule">
+        <field name="name">Reviewer Rule</field>
+        <field name="model_id" ref="model_purchase_rfp"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('supplier_ms.group_reviewer'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Approver rule - can see all RFPs except drafts -->
+    <record id="rule_rfp_approver" model="ir.rule">
+        <field name="name">Approver Rule</field>
+        <field name="model_id" ref="model_purchase_rfp"/>
+        <field name="domain_force">[('state', '!=', 'draft')]</field>
+        <field name="groups" eval="[(4, ref('supplier_ms.group_approver'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Portal rule remains for suppliers -->
+    <record id="rule_rfp_portal" model="ir.rule">
+        <field name="name">Portal RFP Access</field>
+        <field name="model_id" ref="model_purchase_rfp"/>
+        <field name="domain_force">[
+            '|',
+            ('state', '=', 'approved'),
+            ('purchase_order_ids.partner_id', '=', user.partner_id.id)
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <!-- Purchase Order Portal Access Rule -->
+    <record id="purchase_order_portal_rule" model="ir.rule">
+        <field name="name">Portal Purchase Order Access</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+    <!-- Purchase Order Line Portal Access Rule -->
+    <record id="purchase_order_line_portal_rule" model="ir.rule">
+        <field name="name">Portal Purchase Order Line Access</field>
+        <field name="model_id" ref="purchase.model_purchase_order_line"/>
+        <field name="domain_force">[('order_id.partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+    <record id="rule_purchase_order_rfp_reviewer" model="ir.rule">
+        <field name="name">Purchase Order RFP Reviewer</field>
+        <field name="model_id" ref="model_purchase_order"/>
+        <field name="groups" eval="[(4, ref('supplier_ms.group_reviewer'))]"/>
+        <field name="domain_force">[('rfp_id', '!=', False)]</field>
+    </record>
+    <!-- Add Field Access Rights -->
+    <record id="access_rfp_approved_supplier" model="ir.model.access">
+        <field name="name">RFP Approved Supplier Access</field>
+        <field name="model_id" ref="model_purchase_rfp"/>
+        <field name="group_id" ref="supplier_ms.group_reviewer"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

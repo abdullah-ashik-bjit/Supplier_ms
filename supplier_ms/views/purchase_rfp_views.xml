@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- RFP Form View -->
+    <record id="view_purchase_rfp_form" model="ir.ui.view">
+        <field name="name">purchase.rfp.form</field>
+        <field name="model">purchase.rfp</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <!-- Reviewer Actions -->
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="oe_highlight"
+                            options="{'state': 'draft'}"
+                            groups="supplier_ms.group_reviewer"/>
+
+                    <button name="action_return_draft"
+                            string="Return to Draft"
+                            type="object"
+                            options="{'state': 'submitted'}"
+                            groups="supplier_ms.group_reviewer"/>
+
+                    <button name="action_recommend"
+                            string="Recommend"
+                            type="object"
+                            class="oe_highlight"
+                            options="{'invisible': ['|', ('state', '!=', 'closed'), ('purchase_order_ids', '=', [])]}"
+                            groups="supplier_ms.group_reviewer"/>
+
+                    <!-- Approver Actions -->
+                    <button name="action_approve"
+                            string="Approve"
+                            type="object"
+                            class="oe_highlight"
+                            options="{'state': 'submitted'}"
+                            groups="supplier_ms.group_approver"/>
+
+                    <button name="action_reject"
+                            string="Reject"
+                            type="object"
+                            options="{'state': 'submitted'}"
+                            groups="supplier_ms.group_approver"/>
+
+                    <button name="action_close"
+                            string="Close"
+                            type="object"
+                            options="{'state': 'approved'}"
+                            groups="supplier_ms.group_approver"/>
+
+                    <button name="action_accept"
+                            string="Accept"
+                            type="object"
+                            class="oe_highlight"
+                            options="{'invisible': ['|', ('state', '!=', 'recommendation'), ('approved_supplier_id', '=', False)]}"
+                            groups="supplier_ms.group_approver"/>
+
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved,closed,recommendation,accepted"/>
+
+                    <!--                    <field name="approved_supplier" -->
+                    <!--                           attrs="{'invisible': [('state', '!=', 'recommendation')],-->
+                    <!--                                  'required': [('state', '=', 'recommendation')]}"-->
+                    <!--                           options="{'no_create': True, 'no_open': True}"/>-->
+
+                    <!--                    <button name="recompute_totals"-->
+                    <!--                            type="object"-->
+                    <!--                            string="Recompute Totals"-->
+                    <!--                            class="btn-secondary"-->
+                    <!--                            groups="base.group_system"/>-->
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" options="{'readonly': True}"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                            <field name="required_date"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="create_uid" readonly="1" string="Created By" groups="base.group_no_one"/>
+                            <field name="create_date" readonly="1" string="Creation Date" groups="base.group_no_one"/>
+                        </group>
+                        <group>
+                            <field name="total_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="currency_id" options="{'no_create': True, 'no_open': True}"
+                                   groups="base.group_multi_currency"/>
+                            <field name="approved_supplier_id"
+                                   options="{
+                                           'invisible': [('state', '!=', 'recommendation')],
+                                           'required': [('state', '=', 'recommendation')],
+                                           'no_create': True
+                                       }"
+                                   domain="[('supplier_rank', '>', 0)]"
+                                   groups="supplier_ms.group_approver"/>
+                            <field name="write_uid" readonly="1" string="Last Updated By" groups="base.group_no_one"/>
+                            <field name="write_date" readonly="1" string="Last Update Date" groups="base.group_no_one"/>
+                        </group>
+                    </group>
+                    <div class="oe_button_box" name="button_box" position="inside">
+                        <button name="action_view_quotations"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-list"
+                                options="{'invisible': [('state', 'not in', ['approved', 'closed', 'recommendation', 'accepted'])]}"
+                                groups="supplier_ms.group_reviewer,supplier_ms.group_approver">
+                            <field name="quotation_count" widget="statinfo" string="Quotations"/>
+                        </button>
+                    </div>
+                    <notebook>
+                        <page string="Products" name="products">
+                            <field name="product_line_ids" options="{'readonly': [('state', '!=', 'draft')]}">
+                                <tree editable="bottom">
+                                    <field name="product_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="description"/>
+                                    <field name="quantity"/>
+                                    <!--                                    <field name="currency_id" invisible="1"/>-->
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Quotations" name="quotations">
+                            <field name="purchase_order_ids" readonly="state not in ['approved', 'closed']">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="expected_delivery_date"/>
+                                    <field name="warranty_period"/>
+                                    <field name="score" decoration-success="score >= 75"
+                                           decoration-warning="score >= 50 and score &lt; 75"
+                                           decoration-danger="score &lt; 50"/>
+                                    <field name="delivery_charges" widget="monetary"/>
+                                    <field name="amount_total" widget="monetary"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="is_recommended"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Comments" name="comments">
+                            <group>
+                                <field name="reviewer_comments"
+                                       options="{'readonly': [('state', 'not in', ['draft','submitted'])]}"
+                                       placeholder="Add reviewer comments here..."
+                                       groups="supplier_ms.group_reviewer"/>
+                                <field name="approver_comments"
+                                       options="{
+                                           'readonly': [('state', 'not in', ['submitted'])],
+                                           'required': [('state', '=', 'rejected')]
+                                       }"
+                                       placeholder="Add rejection reason here..."
+                                       groups="supplier_ms.group_approver"/>
+                            </group>
+                        </page>
+                    </notebook>
+
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- RFP Tree View -->
+    <record id="view_purchase_rfp_tree" model="ir.ui.view">
+        <field name="name">purchase.rfp.tree</field>
+        <field name="model">purchase.rfp</field>
+        <field name="arch" type="xml">
+            <tree string="RFPs" decoration-bf="state == 'approved'">
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="required_date"/>
+                <field name="total_amount"/>
+                <field name="currency_id"/>
+                <field name="quotation_count"/>
+                <field name="approved_supplier_id"/>
+                <field name="create_uid"/>
+                <field name="state" widget="badge" decoration-info="state == 'submitted'"
+                       decoration-success="state == 'approved' or state == 'accepted'"
+                       decoration-warning="state == 'closed' or state == 'recommendation'"
+                       decoration-danger="state == 'rejected'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- RFP Search View -->
+    <record id="view_purchase_rfp_search" model="ir.ui.view">
+        <field name="name">purchase.rfp.search</field>
+        <field name="model">purchase.rfp</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="approved_supplier_id"/>
+                <separator/>
+                <filter string="My RFPs" name="my_rfps" 
+                        domain="[('create_uid', '=', uid)]"
+                        groups="supplier_ms.group_reviewer"/>
+                <filter string="To Review" name="to_review" 
+                        domain="[('state', '=', 'submitted')]"
+                        groups="supplier_ms.group_approver"/>
+                <filter string="To Approve" name="to_approve" 
+                        domain="[('state', '=', 'recommendation')]"
+                        groups="supplier_ms.group_approver"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="status" context="{'group_by': 'state'}"/>
+                    <filter string="Creator" name="creator" context="{'group_by': 'create_uid'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- RFP Graph View -->
+    <record id="view_purchase_rfp_graph" model="ir.ui.view">
+        <field name="name">purchase.rfp.graph</field>
+        <field name="model">purchase.rfp</field>
+        <field name="arch" type="xml">
+            <graph type="line" disable_linking="1">
+                <field name="required_date" interval="month"/>
+                <field name="total_amount" type="measure"/>
+                <field name="name"/>
+                <field name="approved_supplier_id"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="view_purchase_rfp_pivot" model="ir.ui.view">
+        <field name="name">purchase.rfp.pivot</field>
+        <field name="model">purchase.rfp</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="approved_supplier_id" type="row"/>
+                <field name="state" type="row"/>
+                <field name="required_date" type="col" interval="month"/>
+                <field name="total_amount" type="measure"/>
+                <field name="rfp_count" type="measure" string="Count"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Action: Main RFP List -->
+    <record id="action_purchase_rfp" model="ir.actions.act_window">
+        <field name="name">RFPs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.rfp</field>
+        <field name="view_mode">tree,kanban,form,graph,pivot</field>
+        <field name="search_view_id" ref="view_purchase_rfp_search"/>
+        <field name="domain">[]</field>
+        <field name="context">{
+            'graph_measure': 'total_amount',
+            'graph_mode': 'line',
+            'graph_groupbys': ['required_date:month'],
+            'pivot_measures': ['total_amount', 'rfp_count'],
+            'pivot_column_groupby': ['required_date:month'],
+            'pivot_row_groupby': ['approved_supplier_id', 'state'],
+            'pivot_order': 'total_amount desc'
+        }</field>
+    </record>
+
+    <!-- Action: RFPs To Review -->
+    <record id="action_rfp_to_review" model="ir.actions.act_window">
+        <field name="name">RFPs To Review</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.rfp</field>
+        <field name="view_mode">tree,kanban,form,graph,pivot</field>
+        <field name="search_view_id" ref="view_purchase_rfp_search"/>
+        <field name="domain">[
+            ('state', '=', 'submitted'),
+            ('create_uid', '=', uid)
+            ]
+        </field>
+        <field name="context">{
+            'search_default_to_review': 1,
+            'create_uid': uid
+            }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No RFPs to review at the moment
+            </p>
+        </field>
+    </record>
+
+    <!-- Action: RFPs To Approve -->
+    <record id="action_rfp_to_approve" model="ir.actions.act_window">
+        <field name="name">RFPs To Approve</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">purchase.rfp</field>
+        <field name="view_mode">tree,kanban,form,graph,pivot</field>
+        <field name="search_view_id" ref="view_purchase_rfp_search"/>
+        <field name="domain">[('state', '=', 'recommendation')]</field>
+        <field name="context">{'search_default_to_approve': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No RFPs to approve at the moment
+            </p>
+        </field>
+    </record>
+
+    <!-- RFP Kanban View -->
+    <record id="view_purchase_rfp_kanban" model="ir.ui.view">
+        <field name="name">purchase.rfp.kanban</field>
+        <field name="model">purchase.rfp</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state"
+                    class="o_kanban_small_column"
+                    records_draggable="0">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="required_date"/>
+                <field name="total_amount"/>
+                <field name="currency_id"/>
+                <field name="quotation_count"/>
+                <field name="approved_supplier_id"/>
+                <field name="create_uid"/>
+                <field name="write_date"/>
+                <field name="activity_state"/>
+                <progressbar field="activity_state"
+                             colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div class="o_dropdown_kanban dropdown" groups="base.group_user">
+                                    <a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown"
+                                       href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                        <span class="fa fa-ellipsis-v"/>
+                                    </a>
+                                    <div class="dropdown-menu" role="menu">
+                                        <t t-if="widget.editable">
+                                            <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>Required Date:</strong>
+                                        <field name="required_date"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Amount:</strong>
+                                        <field name="total_amount" widget="monetary"
+                                               options="{'currency_field': 'currency_id'}"/>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <strong>Quotations:</strong>
+                                        <field name="quotation_count"/>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Supplier:</strong>
+                                        <field name="approved_supplier_id"/>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <strong>Created by:</strong>
+                                        <field name="create_uid"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="activity_ids" widget="kanban_activity"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="state" widget="label_selection"
+                                           options="{'classes': {
+                                               'draft': 'default',
+                                               'submitted': 'primary',
+                                               'approved': 'success',
+                                               'rejected': 'danger',
+                                               'closed': 'warning',
+                                               'recommendation': 'info',
+                                               'accepted': 'success'}}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

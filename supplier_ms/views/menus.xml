@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+        <!-- Main menus -->
+        <menuitem id="supplier_ms_menu" name="Supplier Management" web_icon="supplier_ms,static/src/img/purchase_root_img.png" sequence="10"/>
+
+
+
+        <menuitem id="supplier_ms_supplier_applications_menu" name="Supplier Applications" parent="supplier_ms_menu"
+                  action="supplier_ms.action_supplier_application" sequence="10"/>
+
+        <!-- Main RFP Menu -->
+        <menuitem id="menu_rfp_root"
+                  name="RFP Management"
+                  parent="purchase.menu_procurement_management"
+                  sequence="5"/>
+
+        <!-- RFP Sub-menus -->
+        <menuitem id="menu_rfp_main"
+                  name="My RFPs"
+                  parent="menu_rfp_root"
+                  action="action_purchase_rfp"
+                  sequence="1"/>
+
+        <!-- RFP To Review -->
+        <menuitem id="menu_rfp_to_review"
+                  name="To Review"
+                  parent="menu_rfp_root"
+                  action="action_rfp_to_review"
+                  sequence="2"
+                  groups="supplier_ms.group_reviewer"/>
+
+        <!-- RFP To Approve -->
+        <menuitem id="menu_rfp_to_approve"
+                  name="To Approve"
+                  parent="menu_rfp_root"
+                  action="action_rfp_to_approve"
+                  sequence="3"
+                  groups="supplier_ms.group_approver"/>
+
+        <!-- RFP Reporting -->
+        <menuitem id="menu_rfp_report"
+                  name="RFP Report"
+                  parent="menu_rfp_root"
+                  action="action_rfp_report"
+                  sequence="4"
+                  groups="supplier_ms.group_reviewer,supplier_ms.group_approver"/>
+
+
+        <!-- Add this inside the existing menus.xml file -->
+        <record id="action_supplier_dashboard" model="ir.actions.client">
+            <field name="name">Supplier Dashboard</field>
+            <field name="tag">supplier_ms.supplier_dashboard</field>
+            <field name="target">main</field>
+        </record>
+
+        <menuitem id="menu_supplier_dashboard"
+                name="Supplier Dashboard"
+                parent="purchase.menu_procurement_management"
+                action="action_supplier_dashboard"
+                sequence="3"
+                groups="supplier_ms.group_reviewer,supplier_ms.group_approver"/>
+
+
+    </data>
+</odoo>

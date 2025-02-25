@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- First Demo RFP -->
+    <record id="demo_rfp_1" model="purchase.rfp">
+        <field name="name">RFP/2024/0000101</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" ref="base.USD"/>
+        <field name="required_date" eval="(DateTime.now() + relativedelta(months=1)).strftime('%Y-%m-%d')"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="state">draft</field>
+    </record>
+
+    <!-- Product Lines for RFP 1 -->
+    <record id="demo_rfp_line_1_1" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_1"/>
+        <field name="product_id" ref="product.consu_delivery_01"/>
+        <field name="description">High-Performance Laptops</field>
+        <field name="quantity">10</field>
+    </record>
+
+    <record id="demo_rfp_line_1_2" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_1"/>
+        <field name="product_id" ref="product.consu_delivery_02"/>
+        <field name="description">24-inch Monitors</field>
+        <field name="quantity">20</field>
+    </record>
+
+    <record id="demo_rfp_line_1_3" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_1"/>
+        <field name="product_id" ref="product.consu_delivery_03"/>
+        <field name="description">Wireless Keyboards</field>
+        <field name="quantity">15</field>
+    </record>
+
+    <!-- Second Demo RFP -->
+    <record id="demo_rfp_2" model="purchase.rfp">
+        <field name="name">RFP/2024/0000102</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" ref="base.USD"/>
+        <field name="required_date" eval="(DateTime.now() + relativedelta(months=2)).strftime('%Y-%m-%d')"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="state">draft</field>
+    </record>
+
+    <!-- Product Lines for RFP 2 -->
+    <record id="demo_rfp_line_2_1" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_2"/>
+        <field name="product_id" ref="product.product_delivery_01"/>
+        <field name="description">Ergonomic Office Chairs</field>
+        <field name="quantity">50</field>
+    </record>
+
+    <record id="demo_rfp_line_2_2" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_2"/>
+        <field name="product_id" ref="product.product_order_01"/>
+        <field name="description">Executive Desks</field>
+        <field name="quantity">25</field>
+    </record>
+
+    <record id="demo_rfp_line_2_3" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_2"/>
+        <field name="product_id" ref="product.product_delivery_02"/>
+        <field name="description">Filing Cabinets</field>
+        <field name="quantity">30</field>
+    </record>
+
+    <!-- Third Demo RFP -->
+    <record id="demo_rfp_3" model="purchase.rfp">
+        <field name="name">RFP/2024/0000103</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" ref="base.USD"/>
+        <field name="required_date" eval="(DateTime.now() + relativedelta(months=1)).strftime('%Y-%m-%d')"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="state">draft</field>
+    </record>
+
+    <!-- Product Lines for RFP 3 -->
+    <record id="demo_rfp_line_3_1" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_3"/>
+        <field name="product_id" ref="product.consu_delivery_01"/>
+        <field name="description">Enterprise Network Switches</field>
+        <field name="quantity">10</field>
+    </record>
+
+    <record id="demo_rfp_line_3_2" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_3"/>
+        <field name="product_id" ref="product.consu_delivery_02"/>
+        <field name="description">Network Security Appliances</field>
+        <field name="quantity">5</field>
+    </record>
+
+    <record id="demo_rfp_line_3_3" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_3"/>
+        <field name="product_id" ref="product.product_order_01"/>
+        <field name="description">Wireless Access Points</field>
+        <field name="quantity">20</field>
+    </record>
+
+    <!-- Fourth Demo RFP -->
+    <record id="demo_rfp_4" model="purchase.rfp">
+        <field name="name">RFP/2024/0000104</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" ref="base.USD"/>
+        <field name="required_date" eval="(DateTime.now() + relativedelta(months=3)).strftime('%Y-%m-%d')"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="state">draft</field>
+    </record>
+
+    <!-- Product Lines for RFP 4 -->
+    <record id="demo_rfp_line_4_1" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_4"/>
+        <field name="product_id" ref="product.consu_delivery_03"/>
+        <field name="description">Enterprise Software Licenses</field>
+        <field name="quantity">100</field>
+    </record>
+
+    <record id="demo_rfp_line_4_2" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_4"/>
+        <field name="product_id" ref="product.product_delivery_01"/>
+        <field name="description">Database Licenses</field>
+        <field name="quantity">50</field>
+    </record>
+
+    <record id="demo_rfp_line_4_3" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_4"/>
+        <field name="product_id" ref="product.product_delivery_02"/>
+        <field name="description">Security Software Licenses</field>
+        <field name="quantity">75</field>
+    </record>
+
+    <!-- Fifth Demo RFP -->
+    <record id="demo_rfp_5" model="purchase.rfp">
+        <field name="name">RFP/2024/0000105</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" ref="base.USD"/>
+        <field name="required_date" eval="(DateTime.now() + relativedelta(months=2)).strftime('%Y-%m-%d')"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="state">draft</field>
+    </record>
+
+    <!-- Product Lines for RFP 5 -->
+    <record id="demo_rfp_line_5_1" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_5"/>
+        <field name="product_id" ref="product.consu_delivery_01"/>
+        <field name="description">Server Racks</field>
+        <field name="quantity">10</field>
+    </record>
+
+    <record id="demo_rfp_line_5_2" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_5"/>
+        <field name="product_id" ref="product.consu_delivery_02"/>
+        <field name="description">UPS Systems</field>
+        <field name="quantity">5</field>
+    </record>
+
+    <record id="demo_rfp_line_5_3" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_5"/>
+        <field name="product_id" ref="product.consu_delivery_03"/>
+        <field name="description">Cooling Units</field>
+        <field name="quantity">8</field>
+    </record>
+
+    <!-- Sixth Demo RFP -->
+    <record id="demo_rfp_6" model="purchase.rfp">
+        <field name="name">RFP/2024/0000106</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" ref="base.USD"/>
+        <field name="required_date" eval="(DateTime.now() + relativedelta(months=2)).strftime('%Y-%m-%d')"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="state">draft</field>
+    </record>
+
+    <!-- Product Lines for RFP 6 -->
+    <record id="demo_rfp_line_6_1" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_6"/>
+        <field name="product_id" ref="product.product_delivery_02"/>
+        <field name="description">Printer Paper (Boxes)</field>
+        <field name="quantity">500</field>
+    </record>
+
+    <record id="demo_rfp_line_6_2" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_6"/>
+        <field name="product_id" ref="product.product_order_01"/>
+        <field name="description">Office Stationery Sets</field>
+        <field name="quantity">200</field>
+    </record>
+
+    <record id="demo_rfp_line_6_3" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_6"/>
+        <field name="product_id" ref="product.consu_delivery_01"/>
+        <field name="description">Printer Cartridges</field>
+        <field name="quantity">100</field>
+    </record>
+
+    <!-- Seventh Demo RFP -->
+    <record id="demo_rfp_7" model="purchase.rfp">
+        <field name="name">RFP/2024/0000107</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" ref="base.USD"/>
+        <field name="required_date" eval="(DateTime.now() + relativedelta(months=3)).strftime('%Y-%m-%d')"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="state">draft</field>
+    </record>
+
+    <!-- Product Lines for RFP 7 -->
+    <record id="demo_rfp_line_7_1" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_7"/>
+        <field name="product_id" ref="product.product_order_01"/>
+        <field name="description">CCTV Cameras</field>
+        <field name="quantity">30</field>
+    </record>
+
+    <record id="demo_rfp_line_7_2" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_7"/>
+        <field name="product_id" ref="product.consu_delivery_02"/>
+        <field name="description">Access Control Systems</field>
+        <field name="quantity">15</field>
+    </record>
+
+    <record id="demo_rfp_line_7_3" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_7"/>
+        <field name="product_id" ref="product.consu_delivery_03"/>
+        <field name="description">Security Alarms</field>
+        <field name="quantity">20</field>
+    </record>
+
+    <!-- Eighth Demo RFP -->
+    <record id="demo_rfp_8" model="purchase.rfp">
+        <field name="name">RFP/2024/0000108</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" ref="base.USD"/>
+        <field name="required_date" eval="(DateTime.now() + relativedelta(months=1)).strftime('%Y-%m-%d')"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="state">draft</field>
+    </record>
+
+    <!-- Product Lines for RFP 8 -->
+    <record id="demo_rfp_line_8_1" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_8"/>
+        <field name="product_id" ref="product.product_delivery_01"/>
+        <field name="description">Industrial Vacuum Cleaners</field>
+        <field name="quantity">10</field>
+    </record>
+
+    <record id="demo_rfp_line_8_2" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_8"/>
+        <field name="product_id" ref="product.product_delivery_02"/>
+        <field name="description">Floor Scrubbers</field>
+        <field name="quantity">5</field>
+    </record>
+
+    <record id="demo_rfp_line_8_3" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_8"/>
+        <field name="product_id" ref="product.product_order_01"/>
+        <field name="description">Cleaning Supply Sets</field>
+        <field name="quantity">50</field>
+    </record>
+
+    <!-- Ninth Demo RFP -->
+    <record id="demo_rfp_9" model="purchase.rfp">
+        <field name="name">RFP/2024/0000109</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" ref="base.USD"/>
+        <field name="required_date" eval="(DateTime.now() + relativedelta(months=4)).strftime('%Y-%m-%d')"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="state">draft</field>
+    </record>
+
+    <!-- Product Lines for RFP 9 -->
+    <record id="demo_rfp_line_9_1" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_9"/>
+        <field name="product_id" ref="product.consu_delivery_01"/>
+        <field name="description">Company Cars</field>
+        <field name="quantity">5</field>
+    </record>
+
+    <record id="demo_rfp_line_9_2" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_9"/>
+        <field name="product_id" ref="product.consu_delivery_02"/>
+        <field name="description">Delivery Vans</field>
+        <field name="quantity">3</field>
+    </record>
+
+    <record id="demo_rfp_line_9_3" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_9"/>
+        <field name="product_id" ref="product.product_delivery_01"/>
+        <field name="description">GPS Tracking Systems</field>
+        <field name="quantity">8</field>
+    </record>
+
+    <!-- Tenth Demo RFP -->
+    <record id="demo_rfp_10" model="purchase.rfp">
+        <field name="name">RFP/2024/0000110</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" ref="base.USD"/>
+        <field name="required_date" eval="(DateTime.now() + relativedelta(months=2)).strftime('%Y-%m-%d')"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="state">draft</field>
+    </record>
+
+    <!-- Product Lines for RFP 10 -->
+    <record id="demo_rfp_line_10_1" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_10"/>
+        <field name="product_id" ref="product.consu_delivery_03"/>
+        <field name="description">Training Materials</field>
+        <field name="quantity">100</field>
+    </record>
+
+    <record id="demo_rfp_line_10_2" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_10"/>
+        <field name="product_id" ref="product.product_delivery_01"/>
+        <field name="description">E-Learning Licenses</field>
+        <field name="quantity">200</field>
+    </record>
+
+    <record id="demo_rfp_line_10_3" model="purchase.rfp.product.line">
+        <field name="rfp_id" ref="demo_rfp_10"/>
+        <field name="product_id" ref="product.product_order_01"/>
+        <field name="description">Assessment Tools</field>
+        <field name="quantity">150</field>
+    </record>
+</odoo>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="mail_blacklist_view_form_inherit" model="ir.ui.view">
+        <field name="name">mail.blacklist.form.inherit</field>
+        <field name="model">mail.blacklist</field>
+        <field name="inherit_id" ref="mail.mail_blacklist_view_form"/>
+        <field name="arch" type="xml">
+            <field name="email" position="after">
+                <field name="reason"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="mail_blacklist_view_tree_inherit" model="ir.ui.view">
+        <field name="name">mail.blacklist.tree.inherit</field>
+        <field name="model">mail.blacklist</field>
+        <field name="inherit_id" ref="mail.mail_blacklist_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="email" position="after">
+                <field name="reason"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="mail_blacklist_view_search_inherit" model="ir.ui.view">
+        <field name="name">mail.blacklist.search.inherit</field>
+        <field name="model">mail.blacklist</field>
+        <field name="inherit_id" ref="mail.mail_blacklist_view_search"/>
+        <field name="arch" type="xml">
+            <field name="email" position="after">
+                <field name="reason"/>
+            </field>
+        </field>
+    </record>
+</odoo> 

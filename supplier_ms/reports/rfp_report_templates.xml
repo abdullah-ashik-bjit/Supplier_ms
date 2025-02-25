@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report Action -->
+    <record id="action_report_rfp" model="ir.actions.report">
+        <field name="name">RFP Report</field>
+        <field name="model">rfp.report.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">supplier_ms.report_rfp_html</field>
+        <field name="report_file">supplier_ms.report_rfp_html</field>
+        <field name="binding_model_id" ref="model_rfp_report_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_rfp_html">
+        <t t-call="web.html_container">
+            <div class="page">
+                <!-- Header Section with Logo and Title -->
+                <div class="row align-items-center mb-5">
+                    <div class="col-6">
+                        <img t-if="company.get('logo')" t-att-src="'/web/image/res.company/%s/logo' % company.get('id')" 
+                             style="max-height: 80px;" alt="Company Logo" class="img-fluid"/>
+                    </div>
+                    <div class="col-6 text-end">
+                        <h2 class="text-primary mb-0">RFP Report</h2>
+                        <p class="text-muted small mb-0">Generated on: <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')"/></p>
+                    </div>
+                </div>
+
+                <!-- Supplier Information Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h3 class="card-title mb-0"><i class="fa fa-building me-2"></i><t t-esc="supplier.get('name')"/></h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Contact Information -->
+                            <div class="col-md-6">
+                                <h5 class="text-muted mb-3">Contact Information</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fa fa-envelope me-2"></i><t t-esc="supplier.get('email')"/></li>
+                                    <li class="mb-2"><i class="fa fa-phone me-2"></i><t t-esc="supplier.get('phone')"/></li>
+                                    <li class="mb-2"><i class="fa fa-map-marker me-2"></i><t t-esc="supplier.get('address')"/></li>
+                                    <li><i class="fa fa-id-card me-2"></i>TIN: <t t-esc="supplier.get('vat')"/></li>
+                                </ul>
+                            </div>
+                            <!-- Bank Information -->
+                            <div class="col-md-6">
+                                <h5 class="text-muted mb-3">Bank Details</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><strong>Bank:</strong> <t t-esc="supplier.get('bank').get('name')"/></li>
+                                    <li class="mb-2"><strong>Account:</strong> <t t-esc="supplier.get('bank').get('acc_name')"/></li>
+                                    <li class="mb-2"><strong>Number:</strong> <t t-esc="supplier.get('bank').get('acc_number')"/></li>
+                                    <li class="mb-2"><strong>IBAN:</strong> <t t-esc="supplier.get('bank').get('iban')"/></li>
+                                    <li><strong>SWIFT:</strong> <t t-esc="supplier.get('bank').get('swift')"/></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RFP List Section -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h4 class="card-title mb-0"><i class="fa fa-list me-2"></i>RFP Summary</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr class="bg-light">
+                                        <th class="py-3">RFP Number</th>
+                                        <th class="py-3">Creation Date</th>
+                                        <th class="py-3">Required Date</th>
+                                        <th class="py-3 text-end">Total Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="total_amount" t-value="0"/>
+                                    <t t-foreach="rfps" t-as="rfp">
+                                        <tr>
+                                            <td class="py-3"><span class="badge bg-primary"><t t-esc="rfp.get('number')"/></span></td>
+                                            <td class="py-3"><t t-esc="rfp.get('date')"/></td>
+                                            <td class="py-3"><t t-esc="rfp.get('required_date')"/></td>
+                                            <td class="py-3 text-end">
+                                                <t t-set="amount" t-value="rfp.get('total_amount')"/>
+                                                <strong t-esc="'%.2f' % amount"/>
+                                                <t t-set="total_amount" t-value="total_amount + amount"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <tr class="bg-light">
+                                        <td colspan="3" class="text-end py-3"><strong>Net Amount</strong></td>
+                                        <td class="text-end py-3"><strong class="text-primary" t-esc="'%.2f' % total_amount"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Summary Section -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h4 class="card-title mb-0"><i class="fa fa-cube me-2"></i>Product Details</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr class="bg-light">
+                                        <th class="py-3">Product</th>
+                                        <th class="py-3 text-end">Quantity</th>
+                                        <th class="py-3 text-end">Unit Price</th>
+                                        <th class="py-3 text-end">Delivery Charges</th>
+                                        <th class="py-3 text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-set="total_subtotal" t-value="0"/>
+                                    <t t-foreach="products" t-as="product">
+                                        <tr>
+                                            <td class="py-3"><t t-esc="product.get('name')"/></td>
+                                            <td class="py-3 text-end"><t t-esc="'%.2f' % product.get('quantity')"/></td>
+                                            <td class="py-3 text-end"><t t-esc="'%.2f' % product.get('unit_price')"/></td>
+                                            <td class="py-3 text-end"><t t-esc="'%.2f' % product.get('delivery_charges')"/></td>
+                                            <td class="py-3 text-end">
+                                                <t t-set="subtotal" t-value="product.get('subtotal')"/>
+                                                <strong t-esc="'%.2f' % subtotal"/>
+                                                <t t-set="total_subtotal" t-value="total_subtotal + subtotal"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <tr class="bg-light">
+                                        <td colspan="4" class="text-end py-3"><strong>Total</strong></td>
+                                        <td class="text-end py-3">
+                                            <strong class="text-primary" t-esc="'%.2f' % total_subtotal"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Section -->
+                <div class="border-top mt-5">
+                    <div class="row align-items-center py-4">
+                        <div class="col-12 text-center mb-3">
+                            <img t-if="company.get('logo')" t-att-src="'/web/image/res.company/%s/logo' % company.get('id')" 
+                                 style="max-height: 40px;" alt="Company Logo"/>
+                        </div>
+                        <div class="col-12">
+                            <div class="d-flex justify-content-center text-muted">
+                                <div class="mx-3 d-flex align-items-center">
+                                    <i class="fa fa-envelope text-primary me-2"></i>
+                                    <span t-esc="company.get('email')"/>
+                                </div>
+                                <div class="mx-3 d-flex align-items-center">
+                                    <i class="fa fa-phone text-primary me-2"></i>
+                                    <span t-esc="company.get('phone')"/>
+                                </div>
+                                <div class="mx-3 d-flex align-items-center">
+                                    <i class="fa fa-map-marker text-primary me-2"></i>
+                                    <span t-esc="company.get('address')"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+</odoo>

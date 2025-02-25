@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_supplier_application_form" model="ir.ui.view">
+        <field name="name">supplier.application.form</field>
+        <field name="model">supplier.application</field>
+        <field name="arch" type="xml">
+            <form string="Supplier Application">
+
+                <div class="alert alert-info" role="alert" invisible="state != 'submitted'">
+                    <strong>Note:</strong>
+                    Application is under review
+                </div>
+
+                <header>
+
+                    <!-- First Review (Only for Submitted Applications, visible only to Reviewer group) -->
+                    <button name="action_review_approve" string="Approve" type="object" class="oe_highlight"
+                            invisible="state != 'submitted'" groups="supplier_ms.group_reviewer"/>
+                    <button name="action_review_reject" string="Reject" type="object" class="oe_highlight"
+                            invisible="state != 'submitted'" groups="supplier_ms.group_reviewer"/>
+                    <button name="action_review_blacklist" string="Blacklist" type="object" class="oe_highlight"
+                            invisible="state != 'submitted'" groups="supplier_ms.group_reviewer"/>
+
+                    <!-- Final Approval (Only for Reviewed Applications, visible only to Approver group) -->
+                    <button name="action_final_approve" string="Final Approve" type="object" class="oe_highlight"
+                            invisible="state != 'reviewed'" groups="supplier_ms.group_approver"/>
+                    <button name="action_final_reject" string="Final Reject" type="object" class="oe_highlight"
+                            invisible="state != 'reviewed'" groups="supplier_ms.group_approver"/>
+
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="submitted,reviewed,approved,rejected"
+                           statusbar_colors="{
+                               'approved': 'success',
+                               'rejected': 'danger',
+                               'blacklisted': 'danger'
+                           }"/>
+                </header>
+
+                <sheet>
+                    <!-- Company Information -->
+                    <div class="row justify-content-between position-relative w-100 m-0 mb-2">
+                        <div class="oe_title mw-75 ps-0 pe-2">
+                            <h1 class="d-flex flex-row align-items-center">
+                                <field name="company_name" placeholder="Company Name" required="True"
+                                       style="font-size: min(4vw, 2.6rem);"/>
+                            </h1>
+                            <h2>
+                                <field name="company_type" placeholder="Company Type"/>
+                            </h2>
+                        </div>
+                        <div class="o_supplier_logo mw-25 text-end">
+                            <field name="company_logo" widget="image" class="oe_avatar m-0"
+                                   style="max-width: 150px; max-height: 150px;"/>
+                        </div>
+                        <!--                        <field name="company_logo" widget="image" class="oe_avatar"/>-->
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="trade_license_number"/>
+                            <field name="tax_identification_number"/>
+                        </group>
+                        <group>
+                            <field name="email" widget="email"/>
+                            <field name="company_address"/>
+                            <field name="commencement_date"/>
+                            <field name="expiry_date"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <!-- Contact Information Tab -->
+                        <page name="contact_info" string="Contact Information">
+                            <group>
+                                <group string="Primary Contact">
+                                    <field name="primary_contact_name"/>
+                                    <field name="primary_contact_email" widget="email"/>
+                                    <field name="primary_contact_phone" widget="phone"/>
+                                    <field name="primary_contact_address"/>
+                                </group>
+
+                                <group string="Finance Contact">
+                                    <field name="finance_contact_name"/>
+                                    <field name="finance_contact_email" widget="email"/>
+                                    <field name="finance_contact_phone" widget="phone"/>
+                                    <field name="finance_contact_address"/>
+                                </group>
+
+                                <group string="Authorized Contact">
+                                    <field name="authorized_contact_name"/>
+                                    <field name="authorized_contact_email" widget="email"/>
+                                    <field name="authorized_contact_phone" widget="phone"/>
+                                    <field name="authorized_contact_address"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Bank Information Tab -->
+                        <page name="bank_info" string="Bank Information">
+                            <group>
+                                <group>
+                                    <field name="bank_name"/>
+                                    <field name="bank_address"/>
+                                    <field name="bank_swift_code"/>
+                                    <field name="iban"/>
+                                </group>
+                                <group>
+                                    <field name="bank_account_name"/>
+                                    <field name="bank_account_number"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Client References Tab -->
+                        <page name="client_references" string="Client References">
+                            <group>
+                                <group string="Client 1" invisible="client_1_name == False">
+                                    <field name="client_1_name"/>
+                                    <field name="client_1_email"/>
+                                    <field name="client_1_phone"/>
+                                    <field name="client_1_address"/>
+                                </group>
+                                <group string="Client 2" invisible="client_2_name == False">
+                                    <field name="client_2_name"/>
+                                    <field name="client_2_email"/>
+                                    <field name="client_2_phone"/>
+                                    <field name="client_2_address"/>
+                                </group>
+                                <group string="Client 3" invisible="client_3_name == False">
+                                    <field name="client_3_name"/>
+                                    <field name="client_3_email"/>
+                                    <field name="client_3_phone"/>
+                                    <field name="client_3_address"/>
+                                </group>
+                                <group string="Client 4" invisible="client_4_name == False">
+                                    <field name="client_4_name"/>
+                                    <field name="client_4_email"/>
+                                    <field name="client_4_phone"/>
+                                    <field name="client_4_address"/>
+                                </group>
+                                <group string="Client 5" invisible="client_5_name == False">
+                                    <field name="client_5_name"/>
+                                    <field name="client_5_email"/>
+                                    <field name="client_5_phone"/>
+                                    <field name="client_5_address"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Certifications Tab -->
+                        <page name="certifications" string="Certifications">
+                            <group>
+                                <field name="certificate_name"/>
+                                <field name="certificate_number"/>
+                                <field name="certifying_body"/>
+                                <field name="award_date"/>
+                                <field name="cert_expiry_date"/>
+                            </group>
+                        </page>
+
+                        <!-- Document Attachments Tab -->
+                        <page name="documents" string="Documents">
+                            <group>
+                                <group>
+                                    <field name="trade_license" widget="binary"/>
+                                    <field name="certificate_of_incorporation" attachment="True"/>
+                                    <field name="certificate_of_good_standing" attachment="True"/>
+                                    <field name="establishment_card" attachment="True"/>
+                                    <field name="vat_tax_certificate" attachment="True"/>
+                                </group>
+                                <group>
+                                    <field name="memorandum_of_association" attachment="True"/>
+                                    <field name="identification_document" attachment="True"/>
+                                    <field name="bank_letter" attachment="True"/>
+                                    <field name="financial_statements" attachment="True"/>
+                                    <field name="other_certifications" attachment="True"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- signatory Tab -->
+                        <page name="signatory" string="Signatory">
+                            <group>
+                                <field name="signatory_name" string="Name of Signatory" required="True"/>
+                                <field name="authorized_signatory" string="Authorized Signatory" required="True"/>
+                                <field name="company_stamp" string="Company Stamp &amp; Date" required="True"/>
+                            </group>
+                        </page>
+
+
+                        <page name="reviewer_comments" string="Reviewer Comments"
+                              invisible="state != 'submitted' and state != 'reviewed' and state != 'rejected' and state != 'blacklisted'">
+                            <group>
+                                <field name="reviewer_comments"
+                                       placeholder="Provide review comments or reason for rejection/blacklist"
+                                       required="state == 'rejected'"/>
+                            </group>
+                        </page>
+
+                        <page name="approver_comments" string="Final Approval Comments"
+                              invisible="state != 'reviewed'">
+                            <group>
+                                <field name="approver_comments" placeholder="Provide final approval comments"/>
+                            </group>
+                        </page>
+
+
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"
+                           options="{'post_refresh': 'recipients'}"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Tree View -->
+    <record id="view_supplier_application_tree" model="ir.ui.view">
+        <field name="name">supplier.application.tree</field>
+        <field name="model">supplier.application</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="company_name"/>
+                <field name="company_type"/>
+                <field name="email"/>
+                <field name="trade_license_number" optional="hide"/>
+                <field name="primary_contact_name" optional="show"/>
+                <field name="primary_contact_email" optional="hide"/>
+                <field name="primary_contact_phone" optional="hide"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-success="state == 'approved'"
+                       decoration-info="state == 'submitted'"
+                       decoration-warning="state == 'reviewed'"
+                       decoration-danger="state == 'rejected'"
+                       decoration-muted="state == 'blacklisted'"/>
+                <field name="create_date" string="Submission Date"/>
+                <field name="write_date" string="Last Updated"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="supplier_application_kanban_view" model="ir.ui.view">
+        <field name="name">supplier.application.kanban</field>
+        <field name="model">supplier.application</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state"
+                    class="o_kanban_small_column"
+                    records_draggable="false"
+                    quick_create="false">
+                <field name="company_name"/>
+                <field name="state"/>
+                <field name="email"/>
+                <field name="create_date"/>
+                <field name="company_logo"/>
+                <field name="company_type"/>
+                <field name="primary_contact_name"/>
+
+                <progressbar field="state"
+                             colors='{"submitted": "#3498db", "reviewed": "#f39c12", "approved": "#2ecc71", "rejected": "#e74c3c"}'/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record p-0">
+                            <!-- Status strip -->
+                            <div t-attf-class="w-100 py-1 px-3 mb-2
+                                #{record.state.raw_value == 'submitted' ? 'bg-info' : ''} 
+                                #{record.state.raw_value == 'reviewed' ? 'bg-warning' : ''}
+                                #{record.state.raw_value == 'approved' ? 'bg-success' : ''}
+                                #{record.state.raw_value == 'rejected' ? 'bg-danger' : ''}">
+                                <small class="text-white">
+                                    <field name="state"/>
+                                </small>
+                            </div>
+
+                            <div class="p-3">
+                                <!-- Company Info -->
+                                <div class="d-flex align-items-center mb-3">
+                                    <!-- Logo -->
+                                    <div class="me-3">
+                                        <t t-if="record.company_logo.raw_value">
+                                            <img t-att-src="'/web/image?model=supplier.application&amp;id=' + record.id.raw_value + '&amp;field=company_logo'"
+                                                 class="rounded" style="width: 40px; height: 40px; object-fit: cover;"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="fa fa-building fa-2x text-muted"/>
+                                        </t>
+                                    </div>
+
+                                    <!-- Company Name -->
+                                    <div>
+                                        <h6 class="mb-0">
+                                            <field name="company_name"/>
+                                        </h6>
+                                        <small class="text-muted">
+                                            <field name="create_date"/>
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Contact Info -->
+                                <div class="text-muted small">
+                                    <div class="mb-1">
+                                        <i class="fa fa-envelope me-2"></i>
+                                        <field name="email"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-user me-2"></i>
+                                        <field name="primary_contact_name"/>
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="text-end mt-3 border-top pt-3">
+                                    <!-- Reviewer Actions - Only for submitted applications -->
+                                    <div t-if="record.state.raw_value == 'submitted'"
+                                         groups="supplier_ms.group_reviewer"
+                                         class="btn-group">
+                                        <button name="action_review_approve"
+                                                type="object"
+                                                class="btn btn-sm btn-outline-success">
+                                            <i class="fa fa-check me-1"/>Review
+                                        </button>
+                                        <button name="action_review_reject"
+                                                type="object"
+                                                class="btn btn-sm btn-outline-danger">
+                                            <i class="fa fa-times me-1"/>Reject
+                                        </button>
+                                        <button name="action_review_blacklist"
+                                                type="object"
+                                                class="btn btn-sm btn-outline-dark">
+                                            <i class="fa fa-ban me-1"/>Blacklist
+                                        </button>
+                                    </div>
+
+                                    <!-- Approver Actions - Only for reviewed applications -->
+                                    <div t-if="record.state.raw_value == 'reviewed'"
+                                         groups="supplier_ms.group_approver"
+                                         class="btn-group">
+                                        <button name="action_final_approve"
+                                                type="object"
+                                                class="btn btn-sm btn-outline-success">
+                                            <i class="fa fa-check-circle me-1"/>Approve
+                                        </button>
+                                        <button name="action_final_reject"
+                                                type="object"
+                                                class="btn btn-sm btn-outline-danger">
+                                            <i class="fa fa-times-circle me-1"/>Reject
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <record id="view_supplier_application_search" model="ir.ui.view">
+        <field name="name">supplier.application.search</field>
+        <field name="model">supplier.application</field>
+        <field name="arch" type="xml">
+            <search string="Supplier Applications">
+                <field name="company_name"/>
+                <field name="email"/>
+                <field name="state"/>
+                <field name="create_date"/>
+                <field name="primary_contact_email"/>
+                <field name="primary_contact_phone"/>
+                <field name="bank_name"/>
+
+                <!-- Status Filters -->
+                <filter string="Submitted" name="submitted" domain="[('state','=','submitted')]"/>
+                <filter string="Reviewed" name="reviewed" domain="[('state','=','reviewed')]"/>
+                <filter string="Approved" name="approved" domain="[('state','=','approved')]"/>
+                <filter string="Rejected" name="rejected" domain="[('state','=','rejected')]"/>
+                <filter string="Blacklisted" name="blacklisted" domain="[('state','=','blacklisted')]"/>
+
+                <!-- Role-Based Default Filters -->
+                <filter string="To Review" name="to_review"
+                        domain="[('state','=','submitted')]" groups="supplier_ms.group_reviewer"/>
+                <filter string="To Approve" name="to_approve"
+                        domain="[('state','=','reviewed')]" groups="supplier_ms.group_approver"/>
+
+                <!-- Group By Options -->
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_status" context="{'group_by':'state'}"/>
+                    <filter string="Company" name="group_by_company" context="{'group_by':'company_name'}"/>
+                    <filter string="Submission Date" name="group_by_create_date" context="{'group_by':'create_date'}"/>
+                </group>
+
+                <!-- Add these features -->
+                <filter string="My Applications"
+                        name="my_applications"
+                        domain="[('create_uid', '=', uid)]"/>
+
+                <filter string="Status" name="group_by_state"
+                        context="{'group_by': 'state'}"/>
+
+                <filter string="Submission Date" name="group_by_date"
+                        context="{'group_by': 'create_date:month'}"/>
+
+                <searchpanel>
+                    <field name="state" string="Status"
+                           enable_counters="1" expand="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Action & Menu -->
+    <record id="action_supplier_application" model="ir.actions.act_window">
+        <field name="name">Supplier Applications</field>
+        <field name="res_model">supplier.application</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_sm">No Supplier Applications yet.</p>
+        </field>
+    </record>
+
+    <!--    &lt;!&ndash; Menu Item &ndash;&gt;-->
+    <!--    <menuitem id="menu_procurement_management_supplier_application" name="Supplier Application"-->
+    <!--              parent="purchase.menu_procurement_management"-->
+    <!--              action="action_supplier_application" sequence="15"/>-->
+</odoo>

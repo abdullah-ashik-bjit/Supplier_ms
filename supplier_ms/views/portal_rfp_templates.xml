@@ -1,0 +1,748 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal RFP List Template -->
+    <template id="portal_my_rfps" name="My RFPs">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <!-- Search bar with sorting and filtering -->
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">RFPs</t>
+                <!-- Search bar configuration -->
+                <t t-set="searchbar_inputs" t-value="{
+                    'all': {'input': 'all', 'label': 'Search in All', 'order': 1},
+                    'name': {'input': 'name', 'label': 'Search in Reference', 'order': 2},
+                    'product': {'input': 'product', 'label': 'Search in Products', 'order': 3}
+                }"/>
+                <t t-set="search_in" t-value="search_in or 'all'"/>
+                        <t t-set="searchbar_sortings" t-value="searchbar_sortings"/>
+                <t t-set="searchbar_filters" t-value="searchbar_filters"/>
+                <t t-set="searchbar_groupby" t-value="searchbar_groupby"/>
+                        <t t-set="sortby" t-value="sortby"/>
+                        <t t-set="filterby" t-value="filterby"/>
+                        <t t-set="groupby" t-value="groupby"/>
+                <t t-set="search" t-value="search"/>
+            </t>
+
+                <t t-if="not rfps">
+                    <div class="alert alert-info text-center" role="alert">
+                        There are currently no RFPs available.
+                    </div>
+                </t>
+
+            <t t-if="rfps">
+                    <div class="table-responsive">
+                    <table class="table table-hover o_portal_my_doc_table">
+                            <thead>
+                                <tr>
+                                    <th>RFP Number</th>
+                                    <th>Required Date</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="rfps" t-as="rfp">
+                                    <tr>
+                                        <td>
+                                            <a t-att-href="'/my/rfp/%s' % rfp.id" class="text-primary">
+                                                <span t-field="rfp.name"/>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span t-field="rfp.required_date"/>
+                                        </td>
+                                        <td>
+                                            <t t-if="rfp.state == 'approved'">
+                                                <span class="badge bg-success">Open</span>
+                                            </t>
+                                            <t t-elif="rfp.state == 'recommendation'">
+                                                <span class="badge bg-warning">Under Review</span>
+                                            </t>
+                                            <t t-elif="rfp.state == 'accepted'">
+                                                <span class="badge bg-primary">Accepted</span>
+                                            </t>
+                                            <t t-elif="rfp.state == 'closed'">
+                                                <span class="badge bg-dark">Closed</span>
+                                            </t>
+                                            <t t-elif="rfp.state == 'rejected'">
+                                                <span class="badge bg-danger">Rejected</span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="badge bg-info" t-field="rfp.state"/>
+                                            </t>
+                                        </td>
+                                        <td class="text-end">
+                                            <a t-att-href="'/my/rfp/%s' % rfp.id"
+                                               class="btn btn-sm btn-primary">
+                                                <t t-if="rfp.state == 'approved'">Submit Quote</t>
+                                                <t t-else="">View Quote</t>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                <div class="o_portal_pager d-flex justify-content-center">
+                    <t t-call="portal.pager"/>
+                    </div>
+                </t>
+        </t>
+    </template>
+    <!-- Portal RFP Detail Template -->
+    <template id="portal_rfp_page" name="RFP">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4">
+                <!-- Header Section -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="mb-0">RFP
+                            <span t-field="rfp.name" class="text-primary"/>
+                        </h2>
+                        <p class="text-muted mb-0">Required by:
+                            <span t-field="rfp.required_date"/>
+                        </p>
+                    </div>
+                    <div>
+                        <t t-if="rfp.state == 'approved'">
+                            <span class="badge bg-success px-3 py-2">Open for Quotation</span>
+                        </t>
+                        <t t-else="">
+                            <span class="badge bg-info px-3 py-2">Quoted</span>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                        <div class="row">
+                    <!-- Left Column - RFP Details -->
+                    <div class="col-lg-8">
+                        <!-- Product List Card -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Requested Products</h5>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th class="text-center">Quantity</th>
+                                            <th class="text-end">Unit Price</th>
+                                            <th class="text-end">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="rfp.product_line_ids" t-as="line">
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img t-if="line.product_id.image_128"
+                                                             t-att-src="image_data_uri(line.product_id.image_128)"
+                                                             class="me-2" style="max-height: 32px;" alt="Product Image"/>
+                                                        <div>
+                                                            <div t-field="line.product_id.display_name"/>
+                                                            <small class="text-muted" t-field="line.description"/>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="line.quantity"/>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span t-field="line.unit_price"
+                                                          t-options='{"widget": "monetary", "display_currency": rfp.currency_id}'/>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span t-field="line.subtotal_price"
+                                                          t-options='{"widget": "monetary", "display_currency": rfp.currency_id}'/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Show quotation submission form only when accessed from RFPs list -->
+                        <t t-if="rfp.state == 'approved' and not from_quotation_list">
+                            <form action="/my/rfp/submit_quote" method="post" class="card shadow-sm mb-4">
+                                <input type="hidden" name="rfp_id" t-att-value="rfp.id"/>
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                <div class="card-header bg-white">
+                                    <h5 class="mb-0">Submit New Quotation</h5>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="expected_delivery_date">Expected Delivery
+                                                Date
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="date" id="expected_delivery_date" name="expected_delivery_date"
+                                                   class="form-control" required="required"
+                                                   t-att-min="datetime.date.today().strftime('%Y-%m-%d')"
+                                                   t-att-max="rfp.required_date.strftime('%Y-%m-%d')"
+                                                   oninvalid="this.setCustomValidity('Please select a delivery date between today and the required date')"
+                                                   oninput="this.setCustomValidity('')"/>
+                                            <div class="invalid-feedback">Please select a valid delivery date</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="warranty_period">Warranty Period (Months)
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="number" id="warranty_period" name="warranty_period"
+                                                   class="form-control" required="required"
+                                                   min="0" max="60" value="0"
+                                                   oninvalid="this.setCustomValidity('Please enter a warranty period between 0 and 60 months')"
+                                                   oninput="this.setCustomValidity('')"/>
+                                            <div class="invalid-feedback">Warranty period must be between 0 and 60
+                                                months
+                        </div>
+                    </div>
+                </div>
+
+                                    <!-- Product Pricing Table -->
+                                    <div class="table-responsive mb-4">
+                            <table class="table table-hover">
+                                            <thead class="bg-light">
+                                    <tr>
+                                        <th>Product</th>
+                                                    <th class="text-center">Qty</th>
+                                                    <th class="text-end">Unit Price
+                                                        <span class="text-danger">*</span>
+                                                    </th>
+                                                    <th class="text-end">Delivery
+                                                        <span class="text-danger">*</span>
+                                                    </th>
+                                                    <th class="text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="rfp.product_line_ids" t-as="line">
+                                        <tr>
+                                            <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <img t-if="line.product_id.image_1920"
+                                                                     t-att-src="image_data_uri(line.product_id.image_1920)"
+                                                                     class="me-2"
+                                                                     style="width: 40px; height: 40px; object-fit: cover;"/>
+                                                                <div>
+                                                                    <div t-field="line.product_id.name"/>
+                                                                    <small class="text-muted"
+                                                                           t-field="line.description"/>
+                                                                </div>
+                                                            </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <span t-field="line.quantity"/>
+                                            </td>
+                                                        <td>
+                                                            <input type="number" t-attf-id="unit_price_#{line.id}"
+                                                                   t-attf-name="unit_price_#{line.id}"
+                                                                   class="form-control text-end" required="required"
+                                                                   step="1" min="1"
+                                                                   placeholder="Enter unit price"
+                                                                   oninvalid="this.setCustomValidity('Please enter a valid unit price greater than 0')"
+                                                                   oninput="this.setCustomValidity('')"/>
+                                                            <div class="invalid-feedback">Unit price must be greater
+                                                                than 0
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" t-attf-id="delivery_charges_#{line.id}"
+                                                                   t-attf-name="delivery_charges_#{line.id}"
+                                                                   class="form-control text-end" required="required"
+                                                                   step="0.01" min="0" value="0"
+                                                                   placeholder="Enter delivery charges"
+                                                                   oninvalid="this.setCustomValidity('Please enter valid delivery charges (0 or greater)')"
+                                                                   oninput="this.setCustomValidity('')"/>
+                                                            <div class="invalid-feedback">Delivery charges must be 0 or
+                                                                greater
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <span class="line-total">0.00</span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                                    <!-- Terms and Conditions -->
+                                    <div class="mb-3">
+                                        <label class="form-label" for="terms_conditions">Terms and Conditions
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea id="terms_conditions" name="terms_conditions"
+                                                  class="form-control" required="required"
+                                                  minlength="50" maxlength="2000"
+                                                  rows="4"
+                                                  placeholder="Please provide your terms and conditions (minimum 50 characters)"
+                                                  oninvalid="this.setCustomValidity('Please enter terms and conditions (minimum 50 characters)')"
+                                                  oninput="this.setCustomValidity('')"></textarea>
+                                        <div class="invalid-feedback">Please enter terms and conditions (minimum 50
+                                            characters)
+                                        </div>
+                                        <small class="text-muted">Minimum 50 characters, maximum 2000 characters</small>
+                    </div>
+                </div>
+
+                                <div class="card-footer bg-white text-end">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        Submit New Quotation
+                                    </button>
+                                </div>
+                            </form>
+                        </t>
+                        <!-- Show quotation details when accessed from My Quotations -->
+                        <t t-if="from_quotation_list">
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-white">
+                                    <h5 class="mb-0">Your Quotation Details</h5>
+                        </div>
+                        <div class="card-body">
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            <strong class="d-block mb-2">Quotation Reference</strong>
+                                            <span class="badge bg-primary" t-field="quotation.name"/>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong class="d-block mb-2">Submission Date</strong>
+                                            <span t-field="quotation.create_date" t-options='{"widget": "datetime"}'/>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            <strong class="d-block mb-2">Expected Delivery Date</strong>
+                                            <span t-field="quotation.expected_delivery_date"/>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong class="d-block mb-2">Warranty Period</strong>
+                                            <span t-field="quotation.warranty_period"/> months
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <strong class="d-block mb-2">Terms and Conditions</strong>
+                                        <div t-field="quotation.terms_conditions"/>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th class="text-center">Quantity</th>
+                                                    <th class="text-end">Unit Price</th>
+                                                    <th class="text-end">Delivery Charges</th>
+                                                    <th class="text-end">Subtotal(Del. Excl.)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="quotation.order_line" t-as="line">
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <img t-if="line.product_id.image_128"
+                                                                     t-att-src="image_data_uri(line.product_id.image_128)"
+                                                                     class="me-2" style="max-height: 32px;" alt="Product Image"/>
+                                                                <div>
+                                                                    <div t-field="line.product_id.display_name"/>
+                                                                    <small class="text-muted" t-field="line.name"/>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span t-field="line.product_qty"/>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <span t-field="line.price_unit"
+                                                                  t-options='{"widget": "monetary", "display_currency": quotation.currency_id}'/>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <span t-field="line.delivery_charges"
+                                                                  t-options='{"widget": "monetary", "display_currency": quotation.currency_id}'/>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <span t-field="line.price_subtotal"
+                                                                  t-options='{"widget": "monetary", "display_currency": quotation.currency_id}'/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                            <tfoot class="border-top">
+                                                <tr>
+                                                    <td colspan="3"></td>
+                                                    <td class="text-end">
+                                                        <strong>Total Delivery Charges:</strong>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <t t-set="total_delivery" t-value="sum(quotation.order_line.mapped('delivery_charges'))"/>
+                                                        <span t-esc="total_delivery" 
+                                                              t-options='{"widget": "monetary", "display_currency": quotation.currency_id}'/>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-top">
+                                                    <td colspan="4" class="text-end">
+                                                        <strong>Total Amount:</strong>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <strong>
+                                                            <span t-field="quotation.amount_total"
+                                                                  t-options='{"widget": "monetary", "display_currency": quotation.currency_id}'/>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Show last submitted quotation only when accessed from RFPs list -->
+                        <t t-if="not from_quotation_list">
+                            <t t-set="supplier_quotes" t-value="rfp.purchase_order_ids.filtered(lambda p: p.partner_id == user.partner_id).sorted(lambda q: q.create_date, reverse=True)"/>
+                            <t t-if="supplier_quotes">
+                                <t t-set="last_quote" t-value="supplier_quotes[0]"/>
+                                <div class="card shadow-sm mb-4">
+                                    <div class="card-header bg-white">
+                                        <h5 class="mb-0">Your Last Submitted Quotation</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Quotation Information -->
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <strong class="d-block mb-2">Quotation Reference</strong>
+                                                <span class="badge bg-primary" t-field="last_quote.name"/>
+                                                </div>
+                                            <div class="col-md-6">
+                                                <strong class="d-block mb-2">Submission Date</strong>
+                                                <span t-field="last_quote.create_date" t-options='{"widget": "datetime"}'/>
+                                            </div>
+                                                </div>
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <strong class="d-block mb-2">Expected Delivery Date</strong>
+                                                <span t-field="last_quote.expected_delivery_date"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong class="d-block mb-2">Warranty Period</strong>
+                                                <span t-field="last_quote.warranty_period"/> months
+                                            </div>
+                                        </div>
+
+                                        <!-- Product Lines -->
+                                        <div class="table-responsive">
+                                            <table class="table table-sm">
+                                                <thead>
+                                                    <tr>
+                                        <th>Product</th>
+                                                        <th class="text-center">Quantity</th>
+                                        <th class="text-end">Unit Price</th>
+                                        <th class="text-end">Delivery Charges</th>
+                                                        <th class="text-end">Subtotal(Del. Excl.)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                                    <t t-foreach="last_quote.order_line" t-as="line">
+                                                        <tr>
+                                            <td>
+                                                                <div class="d-flex align-items-center">
+                                                                    <img t-if="line.product_id.image_128"
+                                                                         t-att-src="image_data_uri(line.product_id.image_128)"
+                                                                         class="me-2" style="max-height: 32px;" alt="Product Image"/>
+                                                                    <div>
+                                                                        <div t-field="line.product_id.display_name"/>
+                                                                <small class="text-muted" t-field="line.name"/>
+                                                                    </div>
+                                                                </div>
+                                            </td>
+                                                            <td class="text-center">
+                                                                <span t-field="line.product_qty"/>
+                                            </td>
+                                            <td class="text-end">
+                                                                <span t-field="line.price_unit"
+                                                                      t-options='{"widget": "monetary", "display_currency": last_quote.currency_id}'/>
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-field="line.delivery_charges"
+                                                                      t-options='{"widget": "monetary", "display_currency": last_quote.currency_id}'/>
+                                            </td>
+                                            <td class="text-end">
+                                                                <span t-field="line.price_subtotal"
+                                                                      t-options='{"widget": "monetary", "display_currency": last_quote.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                                                <tfoot class="border-top">
+                                    <tr>
+                                                        <td colspan="3"></td>
+                                                        <td class="text-end">
+                                                            <strong>Total Delivery Charges:</strong>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <t t-set="total_delivery" t-value="sum(last_quote.order_line.mapped('delivery_charges'))"/>
+                                                            <span t-esc="total_delivery" 
+                                                                  t-options='{"widget": "monetary", "display_currency": last_quote.currency_id}'/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="border-top">
+                                                        <td colspan="4" class="text-end">
+                                                            <strong>Total Amount:</strong>
+                                        </td>
+                                        <td class="text-end">
+                                                            <strong>
+                                                                <span t-field="last_quote.amount_total"
+                                                                      t-options='{"widget": "monetary", "display_currency": last_quote.currency_id}'/>
+                                                            </strong>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                                        </div>
+
+                                        <!-- Terms and Conditions -->
+                                        <div class="mt-4">
+                                            <strong>Terms and Conditions:</strong>
+                                            <div class="mt-2" t-field="last_quote.terms_conditions"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                    </div>
+
+                    <!-- Right Column - Summary & Actions -->
+                    <div class="col-lg-4">
+                        <!-- RFP Summary Card -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">RFP Summary</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="d-flex justify-content-between py-2 border-bottom">
+                                        <span class="text-muted">Status</span>
+                                        <strong t-field="rfp.state"/>
+                                    </li>
+                                    <li class="d-flex justify-content-between py-2 border-bottom">
+                                        <span class="text-muted">Required Date</span>
+                                        <strong t-field="rfp.required_date"/>
+                                    </li>
+                                    <li class="d-flex justify-content-between py-2 border-bottom">
+                                        <span class="text-muted">Total Products</span>
+                                        <strong t-esc="len(rfp.product_line_ids)"/>
+                                    </li>
+                                    <li class="d-flex justify-content-between py-2">
+                                        <span class="text-muted">Currency</span>
+                                        <strong t-field="rfp.currency_id"/>
+                                    </li>
+                                </ul>
+                            </div>
+                                </div>
+
+                        <!-- Action Card -->
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Quotation Status</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- When RFP is approved and no quotation exists -->
+                                <t t-if="rfp.state == 'approved' and not supplier_quote">
+                                    <div class="alert alert-info mb-0">
+                                        <i class="fa fa-info-circle me-2"/>
+                                        This RFP is open for quotation submission. You can submit your quotation using
+                                        the form above.
+                                    </div>
+                                </t>
+
+                                <!-- When quotation exists -->
+                                <t t-if="supplier_quote">
+                                    <!-- If quotation is recommended -->
+                                    <t t-if="supplier_quote.is_recommended">
+                                        <div class="alert alert-success mb-3">
+                                            <i class="fa fa-check-circle me-2"/>
+                                            Your quotation has been recommended for this RFP!
+                                        </div>
+                                    </t>
+
+                                    <!-- If quotation is accepted -->
+                                    <t t-if="supplier_quote.state == 'purchase'">
+                                        <div class="alert alert-success mb-3">
+                                        <i class="fa fa-check-circle me-2"/>
+                                            Congratulations! Your quotation has been accepted and converted to a
+                                            Purchase Order.
+                                        </div>
+                                    </t>
+
+                                    <!-- If RFP is still open and quotation is submitted -->
+                                    <t t-if="rfp.state == 'approved' and supplier_quote.state != 'purchase'">
+                                        <div class="alert alert-info mb-3">
+                                            <i class="fa fa-info-circle me-2"/>
+                                            You have submitted a quotation for this RFP. You can submit another
+                                            quotation if needed.
+                                        </div>
+                                    </t>
+
+                                    <!-- If RFP is under review -->
+                                    <t t-if="rfp.state == 'recommendation' and not supplier_quote.is_recommended">
+                                        <div class="alert alert-warning mb-3">
+                                            <i class="fa fa-clock me-2"/>
+                                            Your quotation is under review.
+                                        </div>
+                                    </t>
+
+                                    <!-- If RFP is closed -->
+                                    <t t-if="rfp.state == 'closed'">
+                                        <div class="alert alert-secondary mb-3">
+                                            <i class="fa fa-lock me-2"/>
+                                            This RFP has been closed.
+                                        </div>
+                                    </t>
+
+                                    <!-- If RFP is rejected -->
+                                    <t t-if="rfp.state == 'rejected'">
+                                        <div class="alert alert-danger mb-3">
+                                            <i class="fa fa-times-circle me-2"/>
+                                            This RFP has been rejected.
+                                        </div>
+                                    </t>
+
+                                    <!-- Show submission date -->
+                                    <p class="text-muted mb-0">
+                                        <small>
+                                            <i class="fa fa-calendar me-2"/>
+                                            Quotation submitted on:
+                                            <span t-field="supplier_quote.create_date"
+                                                  t-options='{"widget": "datetime"}'/>
+                                        </small>
+                                    </p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                </div>
+        </t>
+    </template>
+
+
+    <!-- My Quotations Template -->
+    <template id="portal_my_quotations" name="My Quotations">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <!-- Search bar with sorting and filtering -->
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Quotations</t>
+                <!-- Search bar configuration -->
+                <t t-set="searchbar_inputs" t-value="{
+                    'all': {'input': 'all', 'label': 'Search in All', 'order': 1},
+                    'reference': {'input': 'reference', 'label': 'Search in Reference', 'order': 2},
+                    'amount': {'input': 'amount', 'label': 'Search in Amount', 'order': 3}
+                }"/>
+                <t t-set="search_in" t-value="search_in or 'all'"/>
+                <t t-set="searchbar_sortings" t-value="searchbar_sortings"/>
+                <t t-set="searchbar_filters" t-value="searchbar_filters"/>
+                <t t-set="searchbar_groupby" t-value="searchbar_groupby"/>
+                <t t-set="sortby" t-value="sortby"/>
+                <t t-set="filterby" t-value="filterby"/>
+                <t t-set="groupby" t-value="groupby"/>
+                <t t-set="search" t-value="search"/>
+            </t>
+
+            <t t-if="not quotations">
+                <div class="alert alert-info text-center" role="alert">
+                    There are currently no quotations.
+                </div>
+            </t>
+
+            <t t-if="quotations">
+                <div class="table-responsive">
+                    <table class="table table-hover o_portal_my_doc_table">
+                                    <thead>
+                            <tr>
+                        <th>RFP Reference</th>
+                        <th>Submission Date</th>
+                        <th>Expected Delivery</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Document Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                    <t t-foreach="quotations" t-as="quotation">
+                                            <tr>
+                                                <td>
+                                <a t-attf-href="/my/rfp/#{quotation.rfp_id.id}">
+                                    <t t-esc="quotation.rfp_id.name"/>
+                                </a>
+                            </td>
+                            <td>
+                                <span t-field="quotation.create_date" t-options='{"widget": "date"}'/>
+                            </td>
+                            <td>
+                                <span t-field="quotation.expected_delivery_date"/>
+                                                </td>
+                                                <td>
+                                <span t-field="quotation.amount_total"
+                                      t-options='{"widget": "monetary", "display_currency": quotation.currency_id}'/>
+                                                </td>
+                                                <td>
+                                        <t t-if="quotation.state == 'sent'">
+                                            <span class="badge rounded-pill bg-info">Quotation Submitted</span>
+                                        </t>
+                                        <t t-elif="quotation.rfp_id.state == 'recommendation'">
+                                <t t-if="quotation.is_recommended">
+                                                <span class="badge rounded-pill bg-warning">Under Review (Recommended)</span>
+                                </t>
+                                            <t t-else="">
+                                                <span class="badge rounded-pill bg-secondary">Under Review</span>
+                                </t>
+                                </t>
+                                        <t t-elif="quotation.rfp_id.state == 'accepted'">
+                                            <t t-if="quotation.is_recommended and quotation.state == 'purchase'">
+                                                <span class="badge rounded-pill bg-success">Accepted &amp; Converted to PO</span>
+                                </t>
+                                            <t t-elif="quotation.is_recommended">
+                                                <!-- If RFP is accepted but this recommended quotation is not PO, it means it was not selected -->
+                                                <span class="badge rounded-pill bg-danger">Recommended but Not Selected</span>
+                                </t>
+                                            <t t-else="">
+                                                <span class="badge rounded-pill bg-danger">Not Selected</span>
+                                </t>
+                                </t>
+                                        <t t-elif="quotation.state == 'cancel'">
+                                            <span class="badge rounded-pill bg-danger">Rejected</span>
+                                </t>
+                                        <t t-else="">
+                                            <span class="badge rounded-pill bg-secondary">Processing</span>
+                                </t>
+                                                </td>
+                                                <td>
+                                <t t-if="quotation.state == 'purchase'">
+                                    <span class="badge bg-primary">Purchase Order</span>
+                                </t>
+                                <t t-else="">
+                                    <span class="badge bg-info">Request for Quotation</span>
+                                </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                    </table>
+                </div>
+
+                <div class="o_portal_pager d-flex justify-content-center">
+                    <t t-call="portal.pager"/>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo> 

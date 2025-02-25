@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="auth_signup_login_extend" inherit_id="web.login" name="Login Extend">
+        <xpath expr="//div[hasclass('justify-content-between')]" position="after">
+            <div class="text-center mt-3">
+                <small class="text-muted mt-1">
+                    Want to become a supplier? Register here.
+                </small>
+                <div class="d-grid">
+                    <a href="/supplier/register"
+                       class="btn btn-info btn-block">
+                        <i class="fa fa-handshake me-2"></i>
+                        Supplier Registration
+                    </a>
+                </div>
+
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,1188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="portal_supplier_register" name="Supplier Register - Email Verification">
+            <t t-call="website.layout">
+                <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+                    <div class="col-md-6">
+                        <div class="card shadow-lg border-0 rounded-4">
+                            <div class="card-body p-4">
+                                <h2 class="text-center text-primary mb-3">Supplier Registration</h2>
+                                <p class="text-center text-muted">Enter your email to receive an OTP for verification.</p>
+
+                                <t t-if="error">
+                                    <div class="alert alert-danger text-center">
+                                        <t t-esc="error"/>
+                                    </div>
+                                </t>
+                                <t t-if="success">
+                                    <div class="alert alert-success text-center">
+                                        <t t-esc="success"/>
+                                    </div>
+                                </t>
+
+                                <form action="/supplier/send_otp" method="post">
+                                    <!-- CSRF Token (Fixes the issue) -->
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Email Address</label>
+                                        <input type="email" name="email" class="form-control rounded-3 py-2"
+                                               placeholder="Enter your email" required="required"/>
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary btn-lg rounded-3 fw-bold">
+                                            Send OTP
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <p class="mt-3 text-center text-muted">
+                                    Already have an account?
+                                    <a href="/web/login" class="text-primary fw-bold">Login here</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="portal_supplier_verify_otp" name="Supplier Register - OTP Verification">
+            <t t-call="website.layout">
+                <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+                    <div class="col-md-6">
+                        <div class="card shadow-lg border-0 rounded-4">
+                            <div class="card-body p-4">
+                                <h2 class="text-center text-primary mb-3">Verify OTP</h2>
+                                <p class="text-center text-muted">
+                                    Please enter the OTP sent to
+                                    <strong>
+                                        <t t-esc="email"/>
+                                    </strong>
+                                    to continue.
+                                </p>
+
+                                <t t-if="error">
+                                    <div class="alert alert-danger text-center">
+                                        <t t-esc="error"/>
+                                    </div>
+                                </t>
+                                <t t-if="success">
+                                    <div class="alert alert-success text-center">
+                                        <t t-esc="success"/>
+                                    </div>
+                                </t>
+
+                                <form action="/supplier/verify_otp" method="post">
+                                    <!-- CSRF Token for Security -->
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="email" t-att-value="email"/>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Enter OTP</label>
+                                        <input type="text" name="otp" class="form-control rounded-3 py-2 text-center"
+                                               placeholder="6-digit OTP" required="required"/>
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-success btn-lg rounded-3 fw-bold">
+                                            Verify OTP
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <p class="mt-3 text-center text-muted">
+                                    Didn't receive OTP?
+                                    <a href="/supplier/register" class="text-primary fw-bold">
+                                        Resend OTP
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="portal_supplier_register_form" name="Supplier Registration Form">
+            <t t-call="website.layout">
+                <div class="container mt-5">
+                    <div class="col-lg-10 offset-lg-1">
+                        <div class="card shadow-lg border-0 rounded-4">
+                            <div class="card-body p-5">
+                                <h2 class="text-center text-primary fw-bold mb-4">Supplier Registration</h2>
+                                <p class="text-center text-muted">Complete the form step by step.</p>
+
+                                <!-- Add this right after the step indicators, before the form starts -->
+                                <div class="alert alert-danger mt-3" t-if="error_list" id="error-messages">
+                                    <ul class="mb-0">
+                                        <li t-foreach="error_list" t-as="error" t-esc="error"/>
+                                    </ul>
+                                </div>
+
+                                <!-- Also add this for client-side validation errors -->
+                                <div class="alert alert-danger mt-3 d-none" id="validation-errors">
+                                    <ul class="mb-0" id="validation-error-list">
+                                    </ul>
+                                </div>
+
+                                <form id="supplier-registration-form" 
+                                      action="/supplier/register/form/submit" 
+                                      method="post"
+                                      enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="email" t-att-value="email"/>
+
+                                    <!-- Progress Indicator -->
+                                    <div class="progress mb-4">
+                                        <div class="progress-bar bg-primary" role="progressbar" id="form-progress"
+                                             style="width: 20%;"
+                                             aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Step 1 of 5
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 1: Company Information -->
+                                    <div id="step-1" class="step">
+                                        <h3 class="text-center text-primary fw-bold mb-3">Company Information</h3>
+                                        <p class="text-center text-muted">Please provide your company details below.</p>
+
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Company Name</label>
+                                                <input type="text" name="company_name"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter company name"
+                                                       t-att-value="form_data.get('company_name', '')"/>
+                                                <small class="text-danger d-none error-message">Company Name is required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Company Address</label>
+                                                <input type="text" name="company_address"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter company address"
+                                                       t-att-value="form_data.get('company_address', '')"/>
+                                                <small class="text-danger d-none error-message">Company Address is
+                                                    required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Company Email</label>
+                                                <input type="email"
+                                                       name="email"
+                                                       class="form-control shadow-sm required-field"
+                                                       required="required"
+                                                       placeholder="Enter company email"
+                                                       t-att-value="form_data.get('email') or email or ''"
+                                                       readonly="readonly"/>  <!-- Make it readonly since we get it from OTP verification -->
+                                                <small class="text-danger d-none error-message">Company Email is required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Company Type</label>
+                                                <select name="company_type" class="form-control shadow-sm required-field"
+                                                        required="required">
+                                                    <option value="">Select Type</option>
+                                                    <option value="llc" selected="selected">LLC</option>
+                                                    <option value="corporation">Corporation</option>
+                                                    <option value="partnership">Partnership</option>
+                                                    <option value="sole_proprietor">Sole Proprietor</option>
+                                                </select>
+                                                <small class="text-danger d-none error-message">Please select a Company
+                                                    Type.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Company Logo</label>
+                                                <input type="file" 
+                                                       name="company_logo" 
+                                                       class="form-control" 
+                                                       accept="image/*"/>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Trade License Number</label>
+                                                <input type="text" name="trade_license_number"
+                                                       class="form-control shadow-sm"
+                                                       pattern="[A-Za-z0-9]{8,20}"
+                                                       placeholder="Enter trade license number (8-20 alphanumeric)"/>
+                                                <small class="text-danger d-none error-message">Must be alphanumeric (8-20
+                                                    characters).
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Tax Identification Number (TIN)</label>
+                                                <input type="text" name="tax_identification_number"
+                                                       class="form-control shadow-sm"
+                                                       pattern="\d{16}" placeholder="Enter 16-digit TIN"/>
+                                                <small class="text-danger d-none error-message">Must be exactly 16 digits.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Commencement Date</label>
+                                                <input type="date" name="commencement_date" class="form-control shadow-sm"/>
+                                                <div class="error-message text-danger d-none">Commencement date must be today or a past date</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Expiry Date</label>
+                                                <input type="date" name="expiry_date" class="form-control shadow-sm"/>
+                                                <div class="error-message text-danger d-none">Expiry date must be a future date</div>
+                                            </div>
+                                        </div>
+
+                                        <h4 class="fw-bold mt-4 text-primary">Primary Contact</h4>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Name</label>
+                                                <input type="text" name="primary_contact_name"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter primary contact name"/>
+                                                <small class="text-danger d-none error-message">Name is required.</small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Email</label>
+                                                <input type="email" name="primary_contact_email"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter email address"/>
+                                                <small class="text-danger d-none error-message">Valid Email is required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Phone</label>
+                                                <input type="text" name="primary_contact_phone"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter phone number"/>
+                                                <small class="text-danger d-none error-message">Phone Number is required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Address</label>
+                                                <input type="text" name="primary_contact_address"
+                                                       class="form-control shadow-sm"
+                                                       placeholder="Enter address"/>
+                                            </div>
+                                        </div>
+
+                                        <h4 class="fw-bold mt-4 text-primary">Finance Contact</h4>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Name</label>
+                                                <input type="text" name="finance_contact_name"
+                                                       class="form-control shadow-sm"
+                                                       placeholder="Enter finance contact name"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Email</label>
+                                                <input type="email" name="finance_contact_email"
+                                                       class="form-control shadow-sm"
+                                                       placeholder="Enter finance email"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Phone</label>
+                                                <input type="text" name="finance_contact_phone"
+                                                       class="form-control shadow-sm"
+                                                       placeholder="Enter finance phone"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Address</label>
+                                                <input type="text" name="finance_contact_address"
+                                                       class="form-control shadow-sm"
+                                                       placeholder="Enter finance address"/>
+                                            </div>
+                                        </div>
+
+                                        <h4 class="fw-bold mt-4 text-primary">Authorized Contact</h4>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Name</label>
+                                                <input type="text" name="authorized_contact_name"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter authorized contact name"/>
+                                                <small class="text-danger d-none error-message">Authorized Contact Name is
+                                                    required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Email</label>
+                                                <input type="email" name="authorized_contact_email"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter authorized email"/>
+                                                <small class="text-danger d-none error-message">Authorized Email is
+                                                    required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Phone</label>
+                                                <input type="text" name="authorized_contact_phone"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter authorized phone"/>
+                                                <small class="text-danger d-none error-message">Authorized Phone Number is
+                                                    required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Address</label>
+                                                <input type="text" name="authorized_contact_address"
+                                                       class="form-control shadow-sm"
+                                                       placeholder="Enter authorized address"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-start mt-4">
+                                            <button type="button" class="btn btn-primary btn-lg px-4 next-btn">Next</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 2: Bank Information -->
+                                    <div id="step-2" class="step d-none">
+                                        <h3 class="text-center text-primary fw-bold mb-3">Bank Information</h3>
+                                        <p class="text-center text-muted">Please provide accurate bank details for secure
+                                            transactions.
+                                        </p>
+
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Bank Name</label>
+                                                <input type="text" name="bank_name"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter bank name"/>
+                                                <small class="text-danger d-none error-message">Bank Name is required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Bank Address</label>
+                                                <input type="text" name="bank_address"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter bank address"/>
+                                                <small class="text-danger d-none error-message">Bank Address is required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Bank SWIFT Code</label>
+                                                <input type="text" name="bank_swift_code"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter SWIFT code"/>
+                                                <small class="text-danger d-none error-message">SWIFT Code is required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Account Name</label>
+                                                <input type="text" name="bank_account_name"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter account name"/>
+                                                <small class="text-danger d-none error-message">Account Name is required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Account Number</label>
+                                                <input type="text" name="bank_account_number"
+                                                       class="form-control shadow-sm required-field" required="required"
+                                                       placeholder="Enter account number"/>
+                                                <small class="text-danger d-none error-message">Account Number is
+                                                    required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">IBAN</label>
+                                                <input type="text" name="iban" class="form-control shadow-sm"
+                                                       placeholder="Enter IBAN (if applicable)"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-start mt-4">
+                                            <button type="button" class="btn btn-secondary btn-lg px-4 prev-btn">Previous
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-lg px-4 next-btn">Next</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 3: Previous Client References -->
+                                    <div id="step-3" class="step d-none">
+                                        <h3 class="text-center text-primary fw-bold mb-3">Previous Client References</h3>
+                                        <p class="text-center text-muted">
+                                            Add up to 5 previous clients. The name field is mandatory if Email, Phone, or
+                                            Address is provided.
+                                        </p>
+
+                                        <div id="client_section">
+                                            <!-- First 3 Clients (Always Visible) -->
+                                            <div class="client-entry">
+                                                <h5 class="fw-bold client-title">Client 1</h5>
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Name</label>
+                                                        <input type="text" name="client_1_name"
+                                                               class="form-control shadow-sm client-name required-field"
+                                                               placeholder="Enter client name"/>
+                                                        <small class="text-danger d-none error-message">Client Name is
+                                                            required.
+                                                        </small>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Email</label>
+                                                        <input type="email" name="client_1_email"
+                                                               class="form-control shadow-sm client-email"
+                                                               placeholder="Enter client email"/>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Phone</label>
+                                                        <input type="text" name="client_1_phone"
+                                                               class="form-control shadow-sm client-phone"
+                                                               placeholder="Enter client phone"/>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Address</label>
+                                                        <input type="text" name="client_1_address"
+                                                               class="form-control shadow-sm client-address"
+                                                               placeholder="Enter client address"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="client-entry">
+                                                <h5 class="fw-bold client-title">Client 2</h5>
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Name</label>
+                                                        <input type="text" name="client_2_name"
+                                                               class="form-control shadow-sm client-name required-field"
+                                                               placeholder="Enter client name"/>
+                                                        <small class="text-danger d-none error-message">Client Name is
+                                                            required.
+                                                        </small>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Email</label>
+                                                        <input type="email" name="client_2_email"
+                                                               class="form-control shadow-sm client-email"
+                                                               placeholder="Enter client email"/>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Phone</label>
+                                                        <input type="text" name="client_2_phone"
+                                                               class="form-control shadow-sm client-phone"
+                                                               placeholder="Enter client phone"/>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Address</label>
+                                                        <input type="text" name="client_2_address"
+                                                               class="form-control shadow-sm client-address"
+                                                               placeholder="Enter client address"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="client-entry">
+                                                <h5 class="fw-bold client-title">Client 3</h5>
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Name</label>
+                                                        <input type="text" name="client_3_name"
+                                                               class="form-control shadow-sm client-name required-field"
+                                                               placeholder="Enter client name"/>
+                                                        <small class="text-danger d-none error-message">Client Name is
+                                                            required.
+                                                        </small>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Email</label>
+                                                        <input type="email" name="client_3_email"
+                                                               class="form-control shadow-sm client-email"
+                                                               placeholder="Enter client email"/>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Phone</label>
+                                                        <input type="text" name="client_3_phone"
+                                                               class="form-control shadow-sm client-phone"
+                                                               placeholder="Enter client phone"/>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-bold">Address</label>
+                                                        <input type="text" name="client_3_address"
+                                                               class="form-control shadow-sm client-address"
+                                                               placeholder="Enter client address"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Button to Add More Clients (Up to 5) -->
+                                        <div class="text-center mt-3">
+                                            <button type="button" id="add-client"
+                                                    class="btn btn-outline-secondary btn-lg px-4">
+                                                + Add Another Client
+                                            </button>
+                                        </div>
+
+                                        <!-- Navigation Buttons -->
+                                        <div class="text-start mt-4">
+                                            <button type="button" class="btn btn-secondary btn-lg px-4 prev-btn">Previous
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-lg px-4 next-btn">Next</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hidden Template for Additional Clients -->
+                                    <template id="client-template">
+                                        <div class="client-entry">
+                                            <h5 class="fw-bold client-title"/>
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold">Name</label>
+                                                    <input type="text"
+                                                           class="form-control shadow-sm client-name required-field"
+                                                           placeholder="Enter client name"/>
+                                                    <small class="text-danger d-none error-message">Client Name is
+                                                        required.
+                                                    </small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold">Email</label>
+                                                    <input type="email" class="form-control shadow-sm client-email"
+                                                           placeholder="Enter client email"/>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold">Phone</label>
+                                                    <input type="text" class="form-control shadow-sm client-phone"
+                                                           placeholder="Enter client phone"/>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-bold">Address</label>
+                                                    <input type="text" class="form-control shadow-sm client-address"
+                                                           placeholder="Enter client address"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <!-- Step 4: Certifications -->
+                                    <div id="step-4" class="step d-none">
+                                        <h3 class="text-center text-primary fw-bold mb-3">Certifications</h3>
+                                        <p class="text-center text-muted">Provide details of your certifications and
+                                            accreditations.
+                                        </p>
+
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Certification Name</label>
+                                                <input type="text" name="certificate_name"
+                                                       class="form-control shadow-sm required-field"
+                                                       required="required" placeholder="Enter certification name"/>
+                                                <small class="text-danger d-none error-message">Certification Name is
+                                                    required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Certificate Number</label>
+                                                <input type="text" name="certificate_number" class="form-control shadow-sm"
+                                                       placeholder="Enter certificate number"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Certifying Body</label>
+                                                <input type="text" name="certifying_body"
+                                                       class="form-control shadow-sm required-field"
+                                                       required="required" placeholder="Enter certifying body"/>
+                                                <small class="text-danger d-none error-message">Certifying Body is
+                                                    required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Award Date</label>
+                                                <input type="date" name="award_date"
+                                                       class="form-control shadow-sm required-field"
+                                                       required="required"/>
+                                                <small class="text-danger d-none error-message">Award Date is required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Expiry Date</label>
+                                                <input type="date" name="cert_expiry_date"
+                                                       class="form-control shadow-sm required-field"
+                                                       required="required"/>
+                                                <small class="text-danger d-none error-message">Certification Expiry Date is
+                                                    required.
+                                                </small>
+                                                <small class="text-danger d-none" id="expiry-error">Certification Expiry
+                                                    Date must be a
+                                                    future date.
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-start mt-4">
+                                            <button type="button" class="btn btn-secondary btn-lg px-4 prev-btn">Previous
+                                            </button>
+                                            <button type="button" class="btn btn-primary btn-lg px-4 next-btn">Next</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Step 5: Document Submission -->
+                                    <div id="step-5" class="step d-none">
+                                        <h3 class="text-center text-primary fw-bold mb-3">Document Submission</h3>
+                                        <p class="text-center text-muted">Upload the required documents. Max file size: 1MB
+                                            per file.
+                                        </p>
+
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Trade License / Business Registration
+                                                </label>
+                                                <input type="file" name="trade_license"
+                                                       class="form-control shadow-sm file-upload required-field"
+                                                       required="required"/>
+                                                <small class="text-danger d-none error-message">This document is required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Certificate of Incorporation</label>
+                                                <input type="file" name="certificate_of_incorporation"
+                                                       class="form-control shadow-sm file-upload"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Certificate of Good Standing</label>
+                                                <input type="file" name="certificate_of_good_standing"
+                                                       class="form-control shadow-sm file-upload"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Establishment Card</label>
+                                                <input type="file" name="establishment_card"
+                                                       class="form-control shadow-sm file-upload"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">VAT / Tax Certificate</label>
+                                                <input type="file" name="vat_tax_certificate"
+                                                       class="form-control shadow-sm file-upload"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Memorandum of Association / Power of
+                                                    Attorney
+                                                </label>
+                                                <input type="file" name="memorandum_of_association"
+                                                       class="form-control shadow-sm file-upload"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Identification Document for Authorized
+                                                    Person
+                                                </label>
+                                                <input type="file" name="identification_document"
+                                                       class="form-control shadow-sm file-upload"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Bank Letter indicating Bank Account
+                                                    Information
+                                                </label>
+                                                <input type="file" name="bank_letter"
+                                                       class="form-control shadow-sm file-upload"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Past 2 years of Audited Financial
+                                                    Statements
+                                                </label>
+                                                <input type="file" name="financial_statements"
+                                                       class="form-control shadow-sm file-upload"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Other Certification / Accreditations
+                                                </label>
+                                                <input type="file" name="other_certifications"
+                                                       class="form-control shadow-sm file-upload"/>
+                                            </div>
+                                        </div>
+
+                                        <!-- Declaration Statement -->
+                                        <h4 class="fw-bold mt-4 text-primary">Declaration</h4>
+                                        <p>
+                                            "I confirm that all information and documents supplied are true and accurate to
+                                            the best of my
+                                            knowledge, and I understand that this information may be considered material in
+                                            the evaluation of
+                                            quotations, bids, and/or proposals."
+                                        </p>
+                                        <div class="form-check">
+                                            <input class="form-check-input required-field" type="checkbox"
+                                                   name="declaration_confirm" id="declaration_confirm" required="required"/>
+                                            <label class="form-check-label" for="declaration_confirm">
+                                                I Agree to the Declaration Statement
+                                            </label>
+                                            <small class="text-danger d-none error-message">You must agree before
+                                                submission.
+                                            </small>
+                                        </div>
+
+                                        <div class="row mt-3 g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Name of Signatory</label>
+                                                <input type="text" name="signatory_name"
+                                                       class="form-control shadow-sm required-field" required="required"/>
+                                                <small class="text-danger d-none error-message">Signatory Name is
+                                                    required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Authorized Signatory</label>
+                                                <input type="text" name="authorized_signatory"
+                                                       class="form-control shadow-sm required-field" required="required"/>
+                                                <small class="text-danger d-none error-message">Authorized Signatory is
+                                                    required.
+                                                </small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Company Stamp &amp; Date</label>
+                                                <input type="file" name="company_stamp"
+                                                       class="form-control shadow-sm file-upload required-field"
+                                                       required="required"/>
+                                                <small class="text-danger d-none error-message">This document is required.
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-start mt-4">
+                                            <button type="button" class="btn btn-secondary btn-lg px-4 prev-btn">Previous
+                                            </button>
+                                            <button type="submit" class="btn btn-success btn-lg px-4">Submit Registration
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        // Step Navigation Logic
+                        const steps = Array.from(document.querySelectorAll(".step"));
+                        const nextBtns = document.querySelectorAll(".next-btn");
+                        const prevBtns = document.querySelectorAll(".prev-btn");
+                        const progressBar = document.getElementById("form-progress");
+                        let currentStep = 0;
+
+                        function showStep(index) {
+                            steps.forEach((step, i) => {
+                                step.classList.toggle("d-none", i !== index);
+                            });
+
+                            // Update Progress Bar
+                            const progressPercent = ((index + 1) / steps.length) * 100;
+                            progressBar.style.width = progressPercent + "%";
+                            progressBar.innerText = `Step ${index + 1} of ${steps.length}`;
+                        }
+
+                        function validateSection(stepIndex) {
+                            let isValid = true;
+                            let currentSection = steps[stepIndex];
+                            let fields = currentSection.querySelectorAll('.form-control');
+                            
+                            console.log('Validating section:', stepIndex);
+                            console.log('Number of fields found:', fields.length);
+
+                            fields.forEach(field => {
+                                console.log('Validating field:', field.name, {
+                                    'required': field.hasAttribute('required'),
+                                    'value': field.value,
+                                    'type': field.type
+                                });
+
+                                // Skip validation for optional fields that are empty
+                                if (!field.hasAttribute('required') &amp;&amp; !field.value.trim()) {
+                                    console.log('Skipping optional empty field:', field.name);
+                                    return;
+                                }
+
+                                let fieldIsValid = validateField(field);
+                                if (!fieldIsValid) {
+                                    isValid = false;
+                                    console.log('Invalid field:', field.name);
+                                }
+                            });
+
+                            console.log('Section validation result:', isValid);
+                            return isValid;
+                        }
+
+                        function validateField(field) {
+                            const errorMsg = field.nextElementSibling;
+                            let isValid = true;
+                            let errorText = '';
+
+                            // Debug log
+                            console.log('Field validation details:', {
+                                name: field.name,
+                                value: field.value,
+                                required: field.hasAttribute('required'),
+                                type: field.type
+                            });
+
+                            // Reset validation state
+                            field.classList.remove('is-invalid');
+                            if (errorMsg &amp;&amp; errorMsg.classList.contains('error-message')) {
+                                errorMsg.classList.add('d-none');
+                            }
+
+                            // Required field validation
+                            if (field.hasAttribute('required') &amp;&amp; !field.value.trim()) {
+                                isValid = false;
+                                errorText = 'This field is required';
+                                console.log('Required field empty:', field.name);
+                            } else {
+                                // Only validate non-empty fields
+                                if (field.value.trim()) {
+                                    // Email validation
+                                    if (field.type === 'email') {
+                                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                        if (!emailRegex.test(field.value)) {
+                                            isValid = false;
+                                            errorText = 'Please enter a valid email address';
+                                            console.log('Invalid email:', field.value);
+                                        }
+                                    }
+
+                                    // Phone validation
+                                    if (field.name.includes('phone')) {
+                                        const phoneRegex = /^\+?[\d\s-]{8,}$/;
+                                        if (!phoneRegex.test(field.value)) {
+                                            isValid = false;
+                                            errorText = 'Please enter a valid phone number';
+                                            console.log('Invalid phone:', field.value);
+                                        }
+                                    }
+
+                                    // Trade License validation
+                                    if (field.name === 'trade_license_number') {
+                                        const licenseRegex = /^[A-Za-z0-9]{8,20}$/;
+                                        if (!licenseRegex.test(field.value)) {
+                                            isValid = false;
+                                            errorText = 'License number must be 8-20 alphanumeric characters';
+                                            console.log('Invalid license:', field.value);
+                                        }
+                                    }
+
+                                    // TIN validation
+                                    if (field.name === 'tax_identification_number') {
+                                        const tinRegex = /^\d{16}$/;
+                                        if (!tinRegex.test(field.value)) {
+                                            isValid = false;
+                                            errorText = 'TIN must be exactly 16 digits';
+                                            console.log('Invalid TIN:', field.value);
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (!isValid) {
+                                field.classList.add('is-invalid');
+                                if (errorMsg &amp;&amp; errorMsg.classList.contains('error-message')) {
+                                    errorMsg.textContent = errorText;
+                                    errorMsg.classList.remove('d-none');
+                                }
+                            }
+
+                            console.log('Field validation result:', field.name, isValid);
+                            return isValid;
+                        }
+
+                        // Next button click handler
+                        nextBtns.forEach(btn => {
+                            btn.addEventListener("click", () => {
+                                console.log('Validating step:', currentStep); // Debug
+                                if (validateSection(currentStep)) {
+                                    console.log('Validation passed, moving to next step'); // Debug
+                                    if (currentStep &lt; steps.length - 1) {
+                                        currentStep++;
+                                        showStep(currentStep);
+                                    }
+                                } else {
+                                    console.log('Validation failed'); // Debug
+                                }
+                            });
+                        });
+
+                        // Previous button click handler
+                        prevBtns.forEach(btn => {
+                            btn.addEventListener("click", () => {
+                                if (currentStep > 0) {
+                                    currentStep--;
+                                    showStep(currentStep);
+                                }
+                            });
+                        });
+
+                        // Initialize first step
+                        showStep(currentStep);
+
+                        // Update the client reference validation and add client functionality
+                        let clientCount = 3;  // Change from 1 to 3 since first 3 clients are always visible
+                        const addClientBtn = document.getElementById("add-client");
+                        const clientSection = document.getElementById("client_section");
+
+                        // Validate client reference fields
+                        function validateClientFields(clientDiv) {
+                            let isValid = true;
+                            const fields = clientDiv.querySelectorAll('.form-control');
+                            
+                            fields.forEach(field => {
+                                // Reset validation state
+                                field.classList.remove('is-invalid');
+                                const errorMsg = field.nextElementSibling;
+                                if (errorMsg) errorMsg.classList.add('d-none');
+
+                                if (field.classList.contains('client-name') &amp;&amp; !field.value.trim()) {
+                                    isValid = false;
+                                    field.classList.add('is-invalid');
+                                    if (errorMsg) {
+                                        errorMsg.textContent = "Client name is required";
+                                        errorMsg.classList.remove('d-none');
+                                    }
+                                }
+
+                                if (field.classList.contains('client-email') &amp;&amp; field.value) {
+                                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                    if (!emailRegex.test(field.value)) {
+                                        isValid = false;
+                                        field.classList.add('is-invalid');
+                                        if (errorMsg) {
+                                            errorMsg.textContent = "Please enter a valid email address";
+                                            errorMsg.classList.remove('d-none');
+                                        }
+                                    }
+                                }
+
+                                if (field.classList.contains('client-phone') &amp;&amp; field.value) {
+                                    const phoneRegex = /^\+?[\d\s-]{8,}$/;
+                                    if (!phoneRegex.test(field.value)) {
+                                        isValid = false;
+                                        field.classList.add('is-invalid');
+                                        if (errorMsg) {
+                                            errorMsg.textContent = "Please enter a valid phone number";
+                                            errorMsg.classList.remove('d-none');
+                                        }
+                                    }
+                                }
+                            });
+                            return isValid;
+                        }
+
+                        // Add real-time validation for client fields
+                        function addClientFieldValidation(clientDiv) {
+                            clientDiv.querySelectorAll('.form-control').forEach(field => {
+                                field.addEventListener('input', () => validateClientFields(clientDiv));
+                            });
+                        }
+
+                        // Initialize validation for first client
+                        const firstClient = document.querySelector('.client-entry');
+                        if (firstClient) {
+                            addClientFieldValidation(firstClient);
+                        }
+
+                        // Update add client button handler
+                        if (addClientBtn) {
+                            addClientBtn.addEventListener("click", () => {
+                                // Validate existing clients first
+                                const existingClients = document.querySelectorAll('.client-entry');
+                                let allValid = true;
+                                
+                                existingClients.forEach(client => {
+                                    if (!validateClientFields(client)) {
+                                        allValid = false;
+                                    }
+                                });
+
+                                if (!allValid) {
+                                    alert("Please fill in all required fields for existing clients first.");
+                                    return;
+                                }
+
+                            if (clientCount >= 5) {
+                                    alert("Maximum 5 client references allowed!");
+                                return;
+                            }
+
+                                clientCount++;
+                            let template = document.getElementById('client-template').content.cloneNode(true);
+                            let clientDiv = template.querySelector(".client-entry");
+
+                            // Update client label
+                            clientDiv.querySelector(".client-title").textContent = `Client ${clientCount}`;
+
+                                // Update field names
+                            clientDiv.querySelector(".client-name").setAttribute("name", `client_${clientCount}_name`);
+                            clientDiv.querySelector(".client-email").setAttribute("name", `client_${clientCount}_email`);
+                            clientDiv.querySelector(".client-phone").setAttribute("name", `client_${clientCount}_phone`);
+                            clientDiv.querySelector(".client-address").setAttribute("name", `client_${clientCount}_address`);
+
+                                // Add validation to new client fields
+                                addClientFieldValidation(clientDiv);
+
+                                // Append the new client entry
+                                clientSection.appendChild(clientDiv);
+                            });
+                        }
+
+                        // Expiry Date Validation (No Expired Certifications)
+                        const expiryDateInput = document.querySelector("input[name='expiry_date']");
+                        const expiryError = document.getElementById("expiry-error");
+
+                        if (expiryDateInput) {
+                            expiryDateInput.addEventListener("change", function () {
+                                const expiryDate = new Date(expiryDateInput.value);
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+
+                                if (expiryDate &lt;= today) {
+                                    expiryError.style.display = "block";
+                                    expiryDateInput.setCustomValidity("Expired certifications cannot be added.");
+                                } else {
+                                    expiryError.style.display = "none";
+                                    expiryDateInput.setCustomValidity("");
+                                }
+                            });
+                        }
+
+                        // File Size Validation (Max 1MB per File)
+                        const fileInputs = document.querySelectorAll(".file-upload");
+
+                        fileInputs.forEach(input => {
+                            input.addEventListener("change", function () {
+                                if (this.files[0] &amp;&amp; this.files[0].size > 1 * 1024 * 1024) {
+                                    alert("File size cannot exceed 1MB!");
+                                    this.value = "";
+                                }
+                            });
+                        });
+
+                        // Form Submission Validation (Ensures All Required Fields are Filled)
+                        const form = document.getElementById("supplier-registration-form");
+
+                        if (form) {
+                            form.addEventListener("submit", function (event) {
+                                if (!validateSection(currentStep)) {
+                                    event.preventDefault();
+                                    alert("Please fill in all required fields before submitting.");
+                                }
+                            });
+                        }
+
+                        // Add these validation functions
+                        function validateTIN(tin) {
+                            return /^\d{16}$/.test(tin);
+                        }
+
+                        function validateTradeLicense(license) {
+                            return /^[A-Za-z0-9]{8,20}$/.test(license);
+                        }
+
+                        // Add field-specific validation
+                        document.querySelector('[name="tax_identification_number"]').addEventListener('input', function() {
+                            const errorMsg = this.nextElementSibling;
+                            if (!validateTIN(this.value) &amp;&amp; this.value) {
+                                this.classList.add('is-invalid');
+                                errorMsg.classList.remove('d-none');
+                            } else {
+                                this.classList.remove('is-invalid');
+                                errorMsg.classList.add('d-none');
+                            }
+                        });
+
+                        document.querySelector('[name="trade_license_number"]').addEventListener('input', function() {
+                            const errorMsg = this.nextElementSibling;
+                            if (!validateTradeLicense(this.value) &amp;&amp; this.value) {
+                                this.classList.add('is-invalid');
+                                errorMsg.classList.remove('d-none');
+                            } else {
+                                this.classList.remove('is-invalid');
+                                errorMsg.classList.add('d-none');
+                            }
+                        });
+
+                        // Add expiry date validation
+                        const expiryDateField = document.querySelector('[name="expiry_date"]');
+                        if (expiryDateField) {
+                            expiryDateField.addEventListener('change', function() {
+                                const today = new Date();
+                                const expiryDate = new Date(this.value);
+                                const errorMsg = this.nextElementSibling;
+                                
+                                // Reset date to today's timezone for accurate comparison
+                                today.setHours(0, 0, 0, 0);
+                                expiryDate.setHours(0, 0, 0, 0);
+
+                                if (expiryDate &lt;= today) {
+                                    this.classList.add('is-invalid');
+                                    if (errorMsg &amp;&amp; errorMsg.classList.contains('error-message')) {
+                                        errorMsg.textContent = "Expiry date must be a future date";
+                                        errorMsg.classList.remove('d-none');
+                                    }
+                                } else {
+                                    this.classList.remove('is-invalid');
+                                    if (errorMsg &amp;&amp; errorMsg.classList.contains('error-message')) {
+                                        errorMsg.classList.add('d-none');
+                                    }
+                                }
+                            });
+                        }
+
+                        // Add commencement date validation
+                        const commencementDateField = document.querySelector('[name="commencement_date"]');
+                        if (commencementDateField) {
+                            commencementDateField.addEventListener('change', function() {
+                                const today = new Date();
+                                const commencementDate = new Date(this.value);
+                                const errorMsg = this.nextElementSibling;
+                                
+                                // Reset date to today's timezone for accurate comparison
+                                today.setHours(0, 0, 0, 0);
+                                commencementDate.setHours(0, 0, 0, 0);
+
+                                if (commencementDate > today) {
+                                    this.classList.add('is-invalid');
+                                    if (errorMsg &amp;&amp; errorMsg.classList.contains('error-message')) {
+                                        errorMsg.textContent = "Commencement date must be today or a past date";
+                                        errorMsg.classList.remove('d-none');
+                                    }
+                                } else {
+                                    this.classList.remove('is-invalid');
+                                    if (errorMsg &amp;&amp; errorMsg.classList.contains('error-message')) {
+                                        errorMsg.classList.add('d-none');
+                                    }
+                                }
+                            });
+                        }
+
+                        // Add real-time validation for all required fields
+                        document.querySelectorAll('.form-control').forEach(field => {
+                            field.addEventListener('input', function() {
+                                validateField(this);
+                            });
+                        });
+                    });
+                </script>
+            </t>
+        </template>
+
+        <template id="portal_registration_success" name="Supplier Registration Success">
+            <t t-call="website.layout">
+                <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+                    <div class="col-md-6">
+                        <div class="card shadow-lg border-0 rounded-4">
+                            <div class="card-body p-4">
+                                <h2 class="text-center text-primary mb-3">Registration Submitted</h2>
+                                <p class="text-center text-muted">Your application has been submitted successfully. It will
+                                    be reviewed by our team shortly.
+                                </p>
+
+                                <div class="text-center mt-4">
+                                    <a href="/web/login" class="btn btn-primary btn-lg px-4">Go to Login</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        
+    </data>
+</odoo>
