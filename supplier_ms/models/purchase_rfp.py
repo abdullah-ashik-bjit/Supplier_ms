@@ -94,12 +94,15 @@ class PurchaseRFP(models.Model):
         default=lambda self: self.env.company.currency_id.id,
         tracking=True
     )
+
+
+
     approved_supplier_id = fields.Many2one(
         'res.partner',
         string='Approved Supplier',
+        readonly=False,
         domain="[('supplier_rank', '>', 0)]",
         tracking=True,
-       readonly={'recommendation': [('readonly', False)]},
         groups="supplier_ms.group_approver,supplier_ms.group_reviewer"
     )
 
@@ -164,6 +167,14 @@ class PurchaseRFP(models.Model):
         string='Approver',
         domain="[('groups_id', 'in', [(6, 0, [self.env.ref('supplier_ms.group_approver').id])])]",
         tracking=True
+    )
+
+    # Add this field with other fields
+    acceptance_date = fields.Date(
+        string='Acceptance Date',
+        readonly=True,
+        tracking=True,
+        copy=False
     )
 
     def can_access_from_portal(self):
@@ -463,11 +474,23 @@ class PurchaseRFP(models.Model):
                 'selected_po_id': winning_quotation.id,
                 'total_amount': winning_quotation.amount_total,
                 'acceptance_date': fields.Datetime.now(),
-                'accepted_by': self.env.user.id
             })
-
+            
             # Confirm the winning quotation
             winning_quotation.button_confirm()
+            
+            # Cancel all other quotations for this RFP
+            other_quotations = self.purchase_order_ids.filtered(
+                lambda po: po.id != winning_quotation.id and po.state in ['draft', 'sent']
+            )
+            if other_quotations:
+                other_quotations.button_cancel()
+                # Optional: Add a message in the chatter for each cancelled quotation
+                for po in other_quotations:
+                    po.message_post(
+                        body=_("Quotation cancelled as another supplier was selected for RFP: %s") % self.name,
+                        message_type='notification'
+                    )
             
             # Send acceptance notification using new mail function
             send_rfp_accepted_notification(self.env, self)
@@ -475,7 +498,6 @@ class PurchaseRFP(models.Model):
             return True
             
         except Exception as e:
-            _logger.error(f"Failed to accept RFP: {str(e)}")
             raise UserError(_("Failed to accept RFP: %s") % str(e))
 
     def action_return_draft(self):
@@ -576,10 +598,9 @@ class PurchaseRFP(models.Model):
 
     @api.constrains('state', 'approved_supplier_id')
     def _check_approved_supplier(self):
-        """Ensure approved supplier is selected for certain states"""
         for record in self:
-            if record.state == 'accepted' and not record.approved_supplier_id:
-                raise ValidationError(_("An approved supplier must be selected for accepting the RFP."))
+            if record.state == 'recommendation' and not record.approved_supplier_id:
+                raise ValidationError(_("An approved supplier must be selected in recommendation state."))
 
     @api.constrains('state', 'purchase_order_ids')
     def _check_recommendation_state(self):
@@ -589,11 +610,20 @@ class PurchaseRFP(models.Model):
                 if not recommended:
                     raise ValidationError(_("At least one quotation must be recommended before moving to recommendation state."))
 
+    @api.model
     def write(self, vals):
-        """Override write to track state changes"""
+        """Override write to control approved_supplier_id modifications"""
+        if 'approved_supplier_id' in vals:
+            # Only allow approvers to modify in recommendation state
+            if not self.env.user.has_group('supplier_ms.group_approver'):
+                raise ValidationError(_("Only approvers can modify the approved supplier."))
+            if self.state != 'recommendation':
+                raise ValidationError(_("Approved supplier can only be modified in recommendation state."))
+            
+        # Track state changes
         if 'state' in vals:
             self.env['purchase.rfp.state.history'].create({
                 'rfp_id': self.id,
                 'state': vals['state'],
             })
-        return super(PurchaseRFP, self).write(vals)
+        return super().write(vals)

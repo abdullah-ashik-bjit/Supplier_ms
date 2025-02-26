@@ -179,135 +179,183 @@ class RFPReportWizard(models.TransientModel):
         return self._generate_excel_report()
 
     def _generate_excel_report(self):
-        """Generate Excel report with professional styling"""
+        """Generate Excel report matching HTML preview format exactly"""
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         worksheet = workbook.add_worksheet('RFP Report')
 
-        # Verify company logo
-        if not self.env.company.logo:
-            raise ValidationError(_("Please add a company logo before generating the report."))
+        # Styles matching HTML template with enhanced visibility
+        styles = {
+            'header': workbook.add_format({
+                'font_name': 'Arial',
+                'font_size': 16,
+                'bold': True,
+                'align': 'left',
+                'valign': 'vcenter',
+                'font_color': '#2C5282',  # Deeper blue for better visibility
+                'bottom': 2,
+                'bottom_color': '#4299E1'  # Bottom border for emphasis
+            }),
+            'card_header': workbook.add_format({
+                'font_name': 'Arial',
+                'font_size': 13,
+                'bold': True,
+                'align': 'left',
+                'valign': 'vcenter',
+                'bg_color': '#EBF8FF',  # Light blue background
+                'font_color': '#2B6CB0',  # Dark blue text
+                'border': 2,
+                'border_color': '#90CDF4'  # Lighter blue border
+            }),
+            'label': workbook.add_format({
+                'font_name': 'Arial',
+                'font_size': 11,
+                'bold': True,
+                'align': 'left',
+                'valign': 'vcenter',
+                'font_color': '#4A5568',  # Dark gray for better contrast
+                'bg_color': '#F7FAFC'  # Very light gray background
+            }),
+            'value': workbook.add_format({
+                'font_name': 'Arial',
+                'font_size': 11,
+                'align': 'left',
+                'valign': 'vcenter',
+                'font_color': '#2D3748',  # Darker gray for values
+                'bg_color': '#FFFFFF'  # White background
+            }),
+            'table_header': workbook.add_format({
+                'font_name': 'Arial',
+                'font_size': 11,
+                'bold': True,
+                'align': 'center',
+                'valign': 'vcenter',
+                'bg_color': '#4299E1',  # Blue background
+                'font_color': '#FFFFFF',  # White text
+                'border': 1,
+                'border_color': '#2B6CB0',  # Darker blue border
+                'pattern': 1
+            }),
+            'table_cell': workbook.add_format({
+                'font_name': 'Arial',
+                'font_size': 11,
+                'align': 'left',
+                'valign': 'vcenter',
+                'bg_color': '#FFFFFF',  # White background
+                'border': 1,
+                'border_color': '#CBD5E0',  # Light gray border
+                'text_wrap': True
+            }),
+            'amount': workbook.add_format({
+                'font_name': 'Arial',
+                'font_size': 11,
+                'align': 'right',
+                'valign': 'vcenter',
+                'bg_color': '#FFFFFF',  # White background
+                'border': 1,
+                'border_color': '#CBD5E0',  # Light gray border
+                'num_format': '#,##0.00',
+                'font_color': '#2D3748'  # Darker gray for numbers
+            }),
+            'total_row': workbook.add_format({
+                'font_name': 'Arial',
+                'font_size': 11,
+                'bold': True,
+                'align': 'right',
+                'valign': 'vcenter',
+                'bg_color': '#EBF8FF',  # Light blue background
+                'border': 2,
+                'border_color': '#90CDF4',  # Light blue border
+                'num_format': '#,##0.00',
+                'font_color': '#2C5282'  # Deep blue for emphasis
+            }),
+            'footer': workbook.add_format({
+                'font_name': 'Arial',
+                'font_size': 10,
+                'align': 'center',
+                'valign': 'vcenter',
+                'font_color': '#4A5568',  # Dark gray
+                'bg_color': '#F7FAFC',  # Very light gray background
+                'top': 2,  # Use top instead of border_top
+                'top_color': '#CBD5E0'  # Use top_color instead of border_top_color
+            })
+        }
 
-        # Modern color scheme
-        primary_color = '#1a73e8'  # Modern blue
-        secondary_color = '#f8f9fa'  # Light gray
-        border_color = '#dadce0'  # Subtle border
-        total_row_color = '#e8f0fe'  # Light blue for totals
+        # Column widths - adjust first to accommodate logo
+        worksheet.set_column('A:A', 12)  # Reduced logo column width
+        worksheet.set_column('B:B', 20)
+        worksheet.set_column('C:C', 25)  # Title column wider
+        worksheet.set_column('D:D', 20)
+        worksheet.set_column('E:E', 15)
+        worksheet.set_column('F:F', 15)
 
-        # Set column widths
-        worksheet.set_column('A:A', 18)  # RFP/Product Number
-        worksheet.set_column('B:D', 25)  # Dates and Names
-        worksheet.set_column('E:H', 15)  # Numeric columns
+        current_row = 0
 
-        # Common formats
-        title_format = workbook.add_format({
-            'font_name': 'Segoe UI',
-            'font_size': 16,
-            'bold': True,
-            'font_color': primary_color,
-            'align': 'left',
-            'valign': 'vcenter',
-        })
+        # Header Section with Logo and Title
+        company = self.env.company
+        if company.logo:
+            logo_data = base64.b64decode(company.logo)
+            logo_path = '/tmp/company_logo.png'
+            with open(logo_path, 'wb') as f:
+                f.write(logo_data)
+            
+            # Set first two rows height for header section
+            worksheet.set_row(0, 45)  # Reduced logo row height
+            worksheet.set_row(1, 10)  # Spacing row
+            
+            # Insert logo with smaller size and adjusted positioning
+            worksheet.insert_image(
+                'A1', 
+                logo_path, 
+                {
+                    'x_offset': 3,      # Reduced left offset
+                    'y_offset': 3,      # Reduced top offset
+                    'x_scale': 0.15,    # Reduced width to 15% of original
+                    'y_scale': 0.15,    # Reduced height to 15% of original
+                    'positioning': 1,    # Position image to move with cells
+                    'object_position': 1 # Position object within the cell
+                }
+            )
 
-        header_format = workbook.add_format({
-            'font_name': 'Segoe UI',
-            'font_size': 11,
-            'bold': True,
-            'font_color': 'white',
-            'align': 'center',
-            'valign': 'vcenter',
-            'bg_color': primary_color,
-            'border': 1,
-            'border_color': border_color,
-        })
+        # Title and Date - adjust positioning
+        worksheet.merge_range('C1:D1', 'RFP Report', styles['header'])
+        worksheet.write('F1', fields.Date.today().strftime('%d/%m/%Y'), styles['value'])
 
-        section_format = workbook.add_format({
-            'font_name': 'Segoe UI',
-            'font_size': 12,
-            'bold': True,
-            'font_color': primary_color,
-            'align': 'left',
-            'valign': 'vcenter',
-            'bg_color': secondary_color,
-        })
+        # Add spacing after header
+        current_row = 3  # Start content after header section
+        worksheet.set_row(2, 15)  # Add spacing row
 
-        info_label_format = workbook.add_format({
-            'font_name': 'Segoe UI',
-            'font_size': 10,
-            'bold': True,
-            'align': 'right',
-            'valign': 'vcenter',
-        })
+        # Supplier Information Card starts at row 4
+        worksheet.merge_range(f'A{current_row}:F{current_row}', 'Supplier Information', styles['card_header'])
+        current_row += 1
 
-        info_value_format = workbook.add_format({
-            'font_name': 'Segoe UI',
-            'font_size': 10,
-            'align': 'left',
-            'valign': 'vcenter',
-        })
-
-        date_format = workbook.add_format({
-            'font_name': 'Segoe UI',
-            'font_size': 10,
-            'align': 'center',
-            'num_format': 'dd/mm/yyyy',
-            'border': 1,
-            'border_color': border_color,
-        })
-
-        number_format = workbook.add_format({
-            'font_name': 'Segoe UI',
-            'font_size': 10,
-            'align': 'right',
-            'num_format': '#,##0.00',
-            'border': 1,
-            'border_color': border_color,
-        })
-
-        # SECTION 1: Company Logo and Supplier Information
-        # Insert company logo
-        logo_data = base64.b64decode(self.env.company.logo)
-        logo_path = '/tmp/company_logo.png'
-        with open(logo_path, 'wb') as f:
-            f.write(logo_data)
-        worksheet.insert_image('A1', logo_path, {'x_scale': 0.5, 'y_scale': 0.5})
-
-        # Supplier Information
-        current_row = 1
-        worksheet.merge_range(f'C{current_row}:H{current_row}', self.supplier_id.name, title_format)
-        current_row += 2
-
-        # Supplier Details Table
+        supplier = self.supplier_id
         supplier_info = [
-            ('Email', self.supplier_id.email or ''),
-            ('Phone', self.supplier_id.phone or ''),
-            ('Address', self.supplier_id.street or ''),
-            ('TIN', self.supplier_id.vat or ''),
-            ('Bank Name', self.supplier_id.bank_ids and self.supplier_id.bank_ids[0].bank_id.name or ''),
-            ('Account Name', self.supplier_id.bank_ids and self.supplier_id.bank_ids[0].acc_holder_name or ''),
-            ('Account Number', self.supplier_id.bank_ids and self.supplier_id.bank_ids[0].acc_number or ''),
-            ('IBAN', self.supplier_id.bank_ids and self.supplier_id.bank_ids[0].iban or ''),
-            ('SWIFT Code', self.supplier_id.bank_ids and self.supplier_id.bank_ids[0].bank_id.bank_swift_code or '')
+            ('Company Name', supplier.name),
+            ('Contact Information', ''),
+            ('Email', supplier.email),
+            ('Phone', supplier.phone),
+            ('Address', supplier.street),
+            ('Tax ID', supplier.vat)
         ]
 
         for label, value in supplier_info:
-            worksheet.write(current_row, 2, label, info_label_format)
-            worksheet.merge_range(current_row, 3, current_row, 7, value, info_value_format)
-            current_row += 1
+            if value:  # Skip empty values
+                worksheet.write(current_row, 0, label, styles['label'])
+                worksheet.merge_range(f'B{current_row+1}:F{current_row+1}', value, styles['value'])
+                current_row += 1
 
         current_row += 2
 
-        # SECTION 2: RFP Summary Table
-        worksheet.merge_range(f'A{current_row}:H{current_row}', 'RFP Summary', section_format)
+        # RFP Table
+        worksheet.merge_range(f'A{current_row}:F{current_row}', 'RFP Details', styles['card_header'])
         current_row += 1
 
-        # RFP Table Headers
         headers = ['RFP Number', 'Date', 'Required Date', 'Total Amount']
         for col, header in enumerate(headers):
-            worksheet.write(current_row, col, header, header_format)
+            worksheet.write(current_row, col, header, styles['table_header'])
         current_row += 1
 
-        # Get RFPs data
         domain = [
             ('approved_supplier_id', '=', self.supplier_id.id),
             ('required_date', '>=', self.start_date),
@@ -316,109 +364,50 @@ class RFPReportWizard(models.TransientModel):
         ]
         rfps = self.env['purchase.rfp'].search(domain)
 
-        if not rfps:
-            raise ValidationError(_(
-                "No accepted RFPs found for supplier '%s' between %s and %s"
-            ) % (self.supplier_id.name, self.start_date, self.end_date))
-
-        # Write RFP data
-        rfp_total = 0
+        total_amount = 0
         for rfp in rfps:
-            worksheet.write(current_row, 0, rfp.name, info_value_format)
-            worksheet.write(current_row, 1, rfp.create_date, date_format)
-            worksheet.write(current_row, 2, rfp.required_date, date_format)
             amount = rfp.selected_po_id.amount_total if rfp.selected_po_id else 0.0
-            worksheet.write(current_row, 3, amount, number_format)
-            rfp_total += amount
+            worksheet.write(current_row, 0, rfp.name, styles['table_cell'])
+            worksheet.write(current_row, 1, rfp.create_date.strftime('%d/%m/%Y'), styles['table_cell'])
+            worksheet.write(current_row, 2, rfp.required_date.strftime('%d/%m/%Y'), styles['table_cell'])
+            worksheet.write(current_row, 3, amount, styles['amount'])
+            total_amount += amount
             current_row += 1
 
-        # Write RFP Total
-        worksheet.merge_range(current_row, 0, current_row, 2, 'Net Amount', header_format)
-        worksheet.write(current_row, 3, rfp_total, number_format)
+        # Total row
+        worksheet.write(current_row, 2, 'Total', styles['total_row'])
+        worksheet.write(current_row, 3, total_amount, styles['total_row'])
         current_row += 2
 
-        # SECTION 3: Product Summary Table
-        worksheet.merge_range(f'A{current_row}:H{current_row}', 'Product Summary', section_format)
+        # Products Table
+        worksheet.merge_range(f'A{current_row}:F{current_row}', 'Product Details', styles['card_header'])
         current_row += 1
 
-        # Product Table Headers
-        headers = ['Product', 'Total Quantity', 'Average Unit Price', 'Total Delivery Charges', 'Total Amount']
-        for col, header in enumerate(headers):
-            worksheet.write(current_row, col, header, header_format)
+        product_headers = ['Product', 'Quantity', 'Unit Price', 'Delivery Charges', 'Subtotal']
+        for col, header in enumerate(product_headers):
+            worksheet.write(current_row, col, header, styles['table_header'])
         current_row += 1
 
-        # Group products and calculate totals
-        product_totals = {}
         for rfp in rfps:
-            po = rfp.selected_po_id
-            if po:
-                for line in po.order_line:
-                    product = line.product_id
-                    if product not in product_totals:
-                        product_totals[product] = {
-                            'qty': 0,
-                            'price_total': 0,
-                            'delivery_total': 0,
-                            'amount_total': 0,
-                            'price_count': 0
-                        }
-                    product_totals[product]['qty'] += line.product_qty
-                    product_totals[product]['price_total'] += line.price_unit
-                    product_totals[product]['delivery_total'] += line.delivery_charges
-                    product_totals[product]['amount_total'] += line.price_subtotal + line.delivery_charges
-                    product_totals[product]['price_count'] += 1
+            if rfp.selected_po_id:
+                for line in rfp.selected_po_id.order_line:
+                    worksheet.write(current_row, 0, line.product_id.name, styles['table_cell'])
+                    worksheet.write(current_row, 1, line.product_qty, styles['table_cell'])
+                    worksheet.write(current_row, 2, line.price_unit, styles['amount'])
+                    worksheet.write(current_row, 3, line.delivery_charges, styles['amount'])
+                    worksheet.write(current_row, 4, line.price_subtotal, styles['amount'])
+                    current_row += 1
 
-        # Write product summary
-        grand_total = 0
-        for product, totals in product_totals.items():
-            worksheet.write(current_row, 0, product.name, info_value_format)
-            worksheet.write(current_row, 1, totals['qty'], number_format)
-            avg_price = totals['price_total'] / totals['price_count'] if totals['price_count'] > 0 else 0
-            worksheet.write(current_row, 2, avg_price, number_format)
-            worksheet.write(current_row, 3, totals['delivery_total'], number_format)
-            worksheet.write(current_row, 4, totals['amount_total'], number_format)
-            grand_total += totals['amount_total']
-            current_row += 1
-
-        # Write Product Total
-        worksheet.merge_range(current_row, 0, current_row, 3, 'Total Amount', header_format)
-        worksheet.write(current_row, 4, grand_total, number_format)
+        # Footer
         current_row += 2
-
-        # SECTION 4: Company Footer
-        footer_format = workbook.add_format({
-            'font_name': 'Segoe UI',
-            'font_size': 10,
-            'align': 'left',
-            'valign': 'vcenter',
-            'font_color': '#666666',
-        })
-
-        company = self.env.company
-        worksheet.merge_range(f'A{current_row}:H{current_row}', company.name, footer_format)
-        current_row += 1
-        if company.email:
-            worksheet.merge_range(f'A{current_row}:H{current_row}', f'Email: {company.email}', footer_format)
-            current_row += 1
-        if company.phone:
-            worksheet.merge_range(f'A{current_row}:H{current_row}', f'Phone: {company.phone}', footer_format)
-            current_row += 1
-        if company.street:
-            worksheet.merge_range(f'A{current_row}:H{current_row}', f'Address: {company.street}', footer_format)
-
-        # Final touches
-        worksheet.hide_gridlines(2)
-        worksheet.set_landscape()
-        worksheet.fit_to_pages(1, 0)
-        worksheet.set_margins(left=0.5, right=0.5, top=0.5, bottom=0.5)
+        footer_text = f"{company.name}\n{company.email}\n{company.phone}\n{company.street}"
+        worksheet.merge_range(f'A{current_row}:F{current_row+3}', footer_text, styles['footer'])
 
         workbook.close()
         output.seek(0)
-        
-        # Generate Excel file name
-        filename = f'RFP_Report_{self.supplier_id.name}_{fields.Date.today()}.xlsx'
-        
+
         # Create attachment
+        filename = f'RFP_Report_{self.supplier_id.name}_{fields.Date.today()}.xlsx'
         attachment = self.env['ir.attachment'].create({
             'name': filename,
             'type': 'binary',
@@ -427,7 +416,7 @@ class RFPReportWizard(models.TransientModel):
             'res_id': self.id,
             'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         })
-        
+
         return {
             'type': 'ir.actions.act_url',
             'url': f'/web/content/{attachment.id}/{filename}?download=true',

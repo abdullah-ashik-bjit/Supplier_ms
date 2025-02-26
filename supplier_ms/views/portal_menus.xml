@@ -21,17 +21,6 @@
                 <t t-esc="rfp.name"/>
             </li>
             <!-- For Purchase Order List Page -->
-            <li t-if="page_name == 'purchase'" class="breadcrumb-item">
-                <t t-if="order">
-                    <a href="/my/purchase">Purchase Orders</a>
-                </t>
-                <t t-else="">
-                    Purchase Orders
-                </t>
-            </li>
-            <li t-if="page_name == 'purchase' and order" class="breadcrumb-item active">
-                <t t-esc="order.name"/>
-            </li>
         </xpath>
     </template>
 

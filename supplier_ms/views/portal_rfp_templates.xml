@@ -745,4 +745,34 @@
             </t>
         </t>
     </template>
+
+    <template id="portal_breadcrumbs_rfp" name="Portal RFP Menu" inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <!-- For RFP List Page -->
+            <li t-if="page_name == 'rfps'" class="breadcrumb-item">
+                RFPs
+            </li>
+
+            <!-- For My Quotations List Page -->
+            <li t-if="page_name == 'my_quotations'" class="breadcrumb-item">
+                My Quotations
+            </li>
+
+            <!-- For Quotation Detail Page -->
+            <li t-if="page_name == 'quotation'" class="breadcrumb-item">
+                <a href="/my/quotations">My Quotations</a>
+            </li>
+            <li t-if="page_name == 'quotation' and quotation" class="breadcrumb-item active">
+                <t t-esc="quotation.name"/>
+            </li>
+
+            <!-- For RFP Detail Page -->
+            <li t-if="page_name == 'rfp'" class="breadcrumb-item">
+                <a href="/my/rfps">RFPs</a>
+            </li>
+            <li t-if="page_name == 'rfp' and rfp" class="breadcrumb-item active">
+                <t t-esc="rfp.name"/>
+            </li>
+        </xpath>
+    </template>
 </odoo> 

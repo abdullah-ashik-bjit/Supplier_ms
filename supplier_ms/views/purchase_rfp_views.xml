@@ -80,8 +80,8 @@
                             <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                             <field name="required_date"/>
                             <field name="currency_id" groups="base.group_multi_currency"/>
-                            <field name="create_uid" readonly="1" string="Created By" groups="base.group_no_one"/>
-                            <field name="create_date" readonly="1" string="Creation Date" groups="base.group_no_one"/>
+                            <field name="create_uid" readonly="1" string="Created By" />
+                            <field name="create_date" readonly="1" string="Creation Date"/>
                         </group>
                         <group>
                             <field name="total_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
@@ -89,14 +89,13 @@
                                    groups="base.group_multi_currency"/>
                             <field name="approved_supplier_id"
                                    options="{
-                                           'invisible': [('state', '!=', 'recommendation')],
-                                           'required': [('state', '=', 'recommendation')],
-                                           'no_create': True
+                                           'no_create': True,
+                                           'no_quick_create': True
                                        }"
                                    domain="[('supplier_rank', '>', 0)]"
-                                   groups="supplier_ms.group_approver"/>
-                            <field name="write_uid" readonly="1" string="Last Updated By" groups="base.group_no_one"/>
-                            <field name="write_date" readonly="1" string="Last Update Date" groups="base.group_no_one"/>
+                                   force_save="1"/>
+                            <field name="write_uid" readonly="1" string="Last Updated By" />
+                            <field name="write_date" readonly="1" string="Last Update Date"/>
                         </group>
                     </group>
                     <div class="oe_button_box" name="button_box" position="inside">

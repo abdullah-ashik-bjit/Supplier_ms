@@ -233,16 +233,6 @@ class SupplierApplication(models.Model):
             for approver in approvers:
                 send_supplier_review_approval(self.env, self, approver)
 
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': _('Success'),
-                    'message': _('Application approved and sent for final approval'),
-                    'type': 'success',
-                    'sticky': False,
-                }
-            }
         except Exception as e:
             _logger.error(f"Failed to process review approval: {str(e)}")
             raise UserError(_("Failed to process review approval: %s") % str(e))
@@ -276,16 +266,6 @@ class SupplierApplication(models.Model):
 
             send_supplier_blacklist_notification(self.env, self)
 
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': _('Success'),
-                    'message': _('Application blacklisted successfully'),
-                    'type': 'success',
-                    'sticky': False,
-                }
-            }
         except Exception as e:
             _logger.error(f"Failed to blacklist application: {str(e)}")
             raise UserError(_("Failed to blacklist application: %s") % str(e))
@@ -338,16 +318,6 @@ class SupplierApplication(models.Model):
                 )
                 _logger.info(f"Final rejection notification sent to: {self.email}")
 
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': _('Success'),
-                    'message': _('Application rejected successfully'),
-                    'type': 'success',
-                    'sticky': False,
-                }
-            }
 
         except Exception as e:
             _logger.error(f"Failed to reject application: {str(e)}")
