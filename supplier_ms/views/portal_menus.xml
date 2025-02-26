@@ -59,16 +59,6 @@
                     <t t-set="placeholder_count" t-value="'quotation_count'"/>
                 </t>
             </div>
-            <div id="portal_client_category" position="inside">
-                <!-- Purchase Orders Entry -->
-                <t t-call="portal.portal_docs_entry">
-                    <t t-set="title">Purchase Orders</t>
-                    <t t-set="text">List of all Purchase Orders</t>
-                    <t t-set="url" t-value="'/my/purchase'"/>
-                    <t t-set="icon" t-value="'/supplier_ms/static/src/img/purchase_icon.svg'"/>
-                    <t t-set="placeholder_count" t-value="'purchase_count'"/>
-                </t>
-            </div>
 
             <!-- RFPs Entry -->
 

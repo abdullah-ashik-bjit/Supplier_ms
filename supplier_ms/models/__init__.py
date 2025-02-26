@@ -7,7 +7,6 @@ from . import res_partner_bank_inherit
 from . import res_bank_inherit
 from . import supplier_client_reference
 from . import res_users_inherit
-from . import hr_employee_inherit
 from . import purchase_rfp
 from . import purchase_rfp_line
 from . import purchase_order_inherit

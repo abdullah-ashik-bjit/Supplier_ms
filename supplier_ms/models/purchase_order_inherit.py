@@ -40,8 +40,8 @@ class PurchaseOrder(models.Model):
                     'product_qty': line.quantity,
                     'product_uom': line.product_id.uom_po_id.id,
                     'date_planned': self.rfp_id.required_date,
-                    'price_unit': 0.0,  # Price will be set by supplier
-                    'delivery_charges': 0.0,  # Delivery charges will be set by supplier
+                    'price_unit': 0.0,
+                    'delivery_charges': 0.0,
                     'order_id': self.id,
                 }
                 order_lines.append((0, 0, vals))
@@ -50,18 +50,8 @@ class PurchaseOrder(models.Model):
 
     @api.constrains('rfp_id', 'partner_id')
     def _check_duplicate_quotation(self):
-        """Remove duplicate quotation constraint to allow multiple submissions"""
         pass
 
-    # @api.constrains('is_recommended', 'rfp_id')
-    # def _check_single_recommendation(self):
-    #     for po in self:
-    #         if po.is_recommended and po.rfp_id:
-    #             other_recommended = po.rfp_id.purchase_order_ids.filtered(
-    #                 lambda p: p.is_recommended and p.id != po.id
-    #             )
-    #             if other_recommended:
-    #                 raise ValidationError(_("Only one quotation can be recommended per RFP."))
 
     def button_confirm(self):
         # Skip product validation for RFP-related purchase orders

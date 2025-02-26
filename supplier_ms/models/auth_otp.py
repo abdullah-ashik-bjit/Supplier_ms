@@ -2,6 +2,7 @@ from odoo import models, fields, api
 import random
 from datetime import datetime, timedelta
 
+
 class SupplierOTP(models.Model):
     _name = "supplier.otp"
     _description = "OTP for Supplier Email Verification"
@@ -12,7 +13,6 @@ class SupplierOTP(models.Model):
 
     @api.model
     def generate_otp(self, email):
-        """Generate OTP and store it for verification"""
         otp_code = str(random.randint(100000, 999999))
         expiration = datetime.now() + timedelta(minutes=10)
 
@@ -27,18 +27,25 @@ class SupplierOTP(models.Model):
         # if template:
         #     template.sudo().send_mail(self.id, force_send=True)
 
-        mail_values={
-        # 'email_from': 'abdullah74332@gmail.com',
-        #set email_form to the current user's email
-        'email_from': 'abdullah74332@gmail.com',
-        'email_to': email,
-        'subject': 'OTP for Supplier Registration',
-        'body_html': f'Your OTP is: <b>{otp_code}</b>',
+
+        mail_values = {
+            'email_from': self.env.user.email or self.env.company.email,
+            'email_to': email,
+            'subject': 'OTP for Supplier Registration',
+            'body_html': f"""
+                <div style="margin: 0 auto; padding: 20px; max-width: 600px; font-family: Arial, sans-serif;">
+                    <h2>OTP Verification</h2>
+                    <p>Your one-time password (OTP) for supplier registration is:</p>
+                    <h1 style="color: #1a73e8; text-align: center;">{otp_code}</h1>
+                    <p>This OTP will expire in 10 minutes.</p>
+                </div>
+            """,
         }
         mail = self.env['mail.mail'].create(mail_values)
         mail.sudo().send()
 
         return otp_code
+
 
     def validate_otp(self, email, otp):
         """Validate OTP for email verification"""

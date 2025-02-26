@@ -267,31 +267,19 @@ class PurchaseRFP(models.Model):
             'approver_id': self.env.user.id
         })
         
+        # Send approval notification to creator
+        send_rfp_approved_notification(self.env, self)
+        
 
-        try:
-            self.write({'state': 'approved'})
-            
-            # Send approval notification
-            send_rfp_approved_notification(self.env, self)
-            
-            # Send to selected suppliers
-            for supplier in self.supplier_ids:
-                send_rfp_to_suppliers_notification(self.env, self, supplier)
-
-            # return {
-            #     'type': 'ir.actions.client',
-            #     'tag': 'display_notification',
-            #     'params': {
-            #         'title': _('Success'),
-            #         'message': _('RFP approved and sent to suppliers'),
-            #         'type': 'success',
-            #         'sticky': False,
-            #     }
-            # }
-
-        except Exception as e:
-            _logger.error(f"Failed to approve RFP: {str(e)}")
-            raise UserError(_("Failed to approve RFP: %s") % str(e))
+        suppliers = self.env['res.partner'].search([
+            ('supplier_rank', '>', 0),
+            ('active', '=', True)
+        ])
+        
+        for supplier in suppliers:
+            send_rfp_to_suppliers_notification(self.env, self, supplier)
+        
+        return True
 
     def action_reject(self):
         """Reject RFP"""

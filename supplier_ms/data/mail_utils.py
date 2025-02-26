@@ -3,7 +3,6 @@ from odoo.exceptions import UserError
 import logging
 from odoo.fields import Datetime
 
-_logger = logging.getLogger(__name__)
 
 def send_rfp_submitted_notification(env, rfp, recipient_email, recipient_name):
     """Send notification when RFP is submitted"""
@@ -22,9 +21,7 @@ def send_rfp_submitted_notification(env, rfp, recipient_email, recipient_name):
             """
         }
         env['mail.mail'].sudo().create(mail_values).send()
-        _logger.info(f"RFP submission notification sent to: {recipient_email}")
     except Exception as e:
-        _logger.error(f"Failed to send RFP submission notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_rfp_approved_notification(env, rfp):
@@ -46,7 +43,6 @@ def send_rfp_approved_notification(env, rfp):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send RFP approval notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_rfp_rejected_notification(env, rfp, rejection_reason):
@@ -68,7 +64,6 @@ def send_rfp_rejected_notification(env, rfp, rejection_reason):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send RFP rejection notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_supplier_review_approval(env, application, approver):
@@ -94,7 +89,6 @@ def send_supplier_review_approval(env, application, approver):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send review approval notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_supplier_final_approval(env, application, password):
@@ -121,7 +115,6 @@ def send_supplier_final_approval(env, application, password):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send approval notification: {str(e)}")
         raise UserError(_("Failed to send approval email"))
 
 def send_supplier_blacklist_notification(env, application):
@@ -145,7 +138,6 @@ def send_supplier_blacklist_notification(env, application):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send blacklist notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_supplier_registration_notification(env, application, reviewer):
@@ -177,7 +169,6 @@ def send_supplier_registration_notification(env, application, reviewer):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send registration notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_final_approval_notification(env, application, approver):
@@ -208,7 +199,6 @@ def send_final_approval_notification(env, application, approver):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send final approval notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_final_rejection_notification(env, application):
@@ -233,7 +223,6 @@ def send_final_rejection_notification(env, application):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send final rejection notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_rfp_closure_notification(env, rfp, supplier_email):
@@ -255,7 +244,6 @@ def send_rfp_closure_notification(env, rfp, supplier_email):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send RFP closure notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_quotation_rejection_notification(env, rfp, supplier_email):
@@ -277,7 +265,6 @@ def send_quotation_rejection_notification(env, rfp, supplier_email):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send quotation rejection notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_rfp_to_suppliers_notification(env, rfp, supplier):
@@ -304,7 +291,6 @@ def send_rfp_to_suppliers_notification(env, rfp, supplier):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send RFP notification to supplier: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_rfp_recommendation_notification(env, rfp):
@@ -327,7 +313,6 @@ def send_rfp_recommendation_notification(env, rfp):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send RFP recommendation notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_rfp_supplier_selected_notification(env, rfp, purchase_order):
@@ -350,7 +335,6 @@ def send_rfp_supplier_selected_notification(env, rfp, purchase_order):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send supplier selection notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_rfp_accepted_notification(env, rfp):
@@ -374,7 +358,6 @@ def send_rfp_accepted_notification(env, rfp):
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send RFP acceptance notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
 
 def send_supplier_registration_reviewer_notification(env, application, reviewer):
@@ -409,7 +392,4 @@ def send_supplier_registration_reviewer_notification(env, application, reviewer)
         }
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
-        _logger.error(f"Failed to send reviewer notification: {str(e)}")
         raise UserError(_("Failed to send notification email"))
-
-# Add more email functions... 

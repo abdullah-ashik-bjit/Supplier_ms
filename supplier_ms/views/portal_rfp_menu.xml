@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Add RFPs to the portal dashboard -->
-        <template id="portal_my_home_rfp" inherit_id="portal.portal_my_home">
-            <xpath expr="//div[@id='portal_docs']" position="inside">
-                <t t-call="portal.portal_docs_entry">
-                    <t t-set="icon" t-value="'/supplier_ms/static/src/img/rfp_icon.svg'"/> <!-- Replace with your icon -->
-                    <t t-set="title">RFPs</t>
-                    <t t-set="text">Manage your Requests for Purchase</t>
-                    <t t-set="url" t-value="'/my/rfps'"/>
-                    <t t-set="config_card" t-value="True"/>
-                </t>
-            </xpath>
-        </template>
+<!--        &lt;!&ndash; Add RFPs to the portal dashboard &ndash;&gt;-->
+<!--        <template id="portal_my_home_rfp" inherit_id="portal.portal_my_home">-->
+<!--            <xpath expr="//div[@id='portal_docs']" position="inside">-->
+<!--                <t t-call="portal.portal_docs_entry">-->
+<!--                    <t t-set="icon" t-value="'/supplier_ms/static/src/img/rfp_icon.svg'"/> &lt;!&ndash; Replace with your icon &ndash;&gt;-->
+<!--                    <t t-set="title">RFPs</t>-->
+<!--                    <t t-set="text">Manage your Requests for Purchase</t>-->
+<!--                    <t t-set="url" t-value="'/my/rfps'"/>-->
+<!--                    <t t-set="config_card" t-value="True"/>-->
+<!--                </t>-->
+<!--            </xpath>-->
+<!--        </template>-->
 
-        <!-- Add RFPs List to the portal dashboard -->
-        <template id="portal_my_home_rfp_list" inherit_id="portal.portal_my_home">
-            <xpath expr="//div[@id='portal_docs']" position="inside">
-                <t t-call="portal.portal_docs_entry" groups="base.group_portal">
-                    <t t-set="icon" t-value="'/supplier_ms/static/src/img/rfp_icon.svg'"/> <!-- Replace with your icon -->
-                    <t t-set="title">RFP List</t>
-                    <t t-set="text">View all your RFPs</t>
-                    <t t-set="url" t-value="'/my/rfps'"/>
-                    <t t-set="config_card" t-value="True"/>
-                </t>
-            </xpath>
-        </template>
+<!--        &lt;!&ndash; Add RFPs List to the portal dashboard &ndash;&gt;-->
+<!--        <template id="portal_my_home_rfp_list" inherit_id="portal.portal_my_home">-->
+<!--            <xpath expr="//div[@id='portal_docs']" position="inside">-->
+<!--                <t t-call="portal.portal_docs_entry" groups="base.group_portal">-->
+<!--                    <t t-set="icon" t-value="'/supplier_ms/static/src/img/rfp_icon.svg'"/> &lt;!&ndash; Replace with your icon &ndash;&gt;-->
+<!--                    <t t-set="title">RFP List</t>-->
+<!--                    <t t-set="text">View all your RFPs</t>-->
+<!--                    <t t-set="url" t-value="'/my/rfps'"/>-->
+<!--                    <t t-set="config_card" t-value="True"/>-->
+<!--                </t>-->
+<!--            </xpath>-->
+<!--        </template>-->
 
-        <!-- Breadcrumbs for RFPs -->
-        <template id="portal_my_home_rfp_breadcrumbs" name="Portal RFP Menu" inherit_id="portal.portal_breadcrumbs" priority="30">
-            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
-                <li t-if="page_name == 'rfp'" class="breadcrumb-item">
-                    <a t-if="rfp" t-attf-href="/my/rfps">RFPs</a>
-                    <t t-else="">RFPs</t>
-                </li>
-                <li t-if="rfp" class="breadcrumb-item active">
-                    <t t-esc="rfp.name"/>
-                </li>
-            </xpath>
-        </template>
+<!--        &lt;!&ndash; Breadcrumbs for RFPs &ndash;&gt;-->
+<!--        <template id="portal_my_home_rfp_breadcrumbs" name="Portal RFP Menu" inherit_id="portal.portal_breadcrumbs" priority="30">-->
+<!--            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">-->
+<!--                <li t-if="page_name == 'rfp'" class="breadcrumb-item">-->
+<!--                    <a t-if="rfp" t-attf-href="/my/rfps">RFPs</a>-->
+<!--                    <t t-else="">RFPs</t>-->
+<!--                </li>-->
+<!--                <li t-if="rfp" class="breadcrumb-item active">-->
+<!--                    <t t-esc="rfp.name"/>-->
+<!--                </li>-->
+<!--            </xpath>-->
+<!--        </template>-->
     </data>
 </odoo> 
