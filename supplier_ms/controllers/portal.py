@@ -8,6 +8,7 @@ import datetime
 import logging
 from odoo.tools import groupby as groupbyelem
 from odoo.fields import Date
+# from ..utils.mail_utils import send_rfq_submitted_notification
 
 _logger = logging.getLogger(__name__)
 

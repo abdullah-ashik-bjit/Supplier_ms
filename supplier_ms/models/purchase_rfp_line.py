@@ -240,4 +240,4 @@ class RFQProductLine(models.Model):
     @api.onchange('product_id')
     def _onchange_product_id(self):
         if self.product_id:
-            self.description = self.product_id.display_name 
+            self.description = self.product_id.display_name

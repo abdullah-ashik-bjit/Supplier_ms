@@ -393,3 +393,28 @@ def send_supplier_registration_reviewer_notification(env, application, reviewer)
         env['mail.mail'].sudo().create(mail_values).send()
     except Exception as e:
         raise UserError(_("Failed to send notification email"))
+
+def send_rfq_submitted_notification(env, rfp, purchase_order):
+    """
+    Send notification when supplier submits a quotation for an RFP
+    
+    Args:
+        env: Odoo environment
+        rfp: purchase.rfp record
+        purchase_order: purchase.order record
+    """
+    try:
+        template = env.ref('supplier_ms.email_template_rfq_submitted', raise_if_not_found=False)
+        if template:
+            template.sudo().with_context(
+                rfp_name=rfp.name,
+                supplier_name=purchase_order.partner_id.name
+            ).send_mail(
+                purchase_order.id,
+                force_send=True
+            )
+            _logger.info(
+                f"RFQ submission notification sent for RFP: {rfp.name} from supplier: {purchase_order.partner_id.name}"
+            )
+    except Exception as e:
+        _logger.error(f"Failed to send RFQ submission notification: {str(e)}")

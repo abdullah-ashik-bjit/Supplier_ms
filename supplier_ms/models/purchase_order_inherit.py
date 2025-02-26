@@ -114,13 +114,7 @@ class PurchaseOrder(models.Model):
                 # Get products with their names for better debugging
                 rfp_products = set(po.rfp_id.product_line_ids.mapped('product_id.id'))
                 po_products = set(po.order_line.mapped('product_id.id'))
-                
-                # Enhanced debugging
-                _logger.info("Checking products for PO %s", po.name)
-                _logger.info("RFP Products IDs: %s", list(rfp_products))
-                _logger.info("PO Products IDs: %s", list(po_products))
-                _logger.info("RFP Product Names: %s", po.rfp_id.product_line_ids.mapped('product_id.display_name'))
-                _logger.info("PO Product Names: %s", po.order_line.mapped('product_id.display_name'))
+
                 
                 # Skip empty order lines (draft state)
                 if not po_products and po.state == 'draft':
@@ -211,7 +205,7 @@ class PurchaseOrderLine(models.Model):
             line.update({
                 'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
                 'price_total': taxes['total_included'] + line.delivery_charges,
-                'price_subtotal': base_amount,  # Keep subtotal as product cost only
+                'price_subtotal': base_amount,
             })
 
     @api.onchange('delivery_charges')

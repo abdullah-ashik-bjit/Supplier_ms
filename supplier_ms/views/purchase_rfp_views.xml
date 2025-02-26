@@ -79,7 +79,7 @@
                         <group>
                             <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                             <field name="required_date"/>
-                            <field name="currency_id" groups="base.group_multi_currency"/>
+<!--                            <field name="currency_id" groups="base.group_multi_currency"/>-->
                             <field name="create_uid" readonly="1" string="Created By" />
                             <field name="create_date" readonly="1" string="Creation Date"/>
                         </group>

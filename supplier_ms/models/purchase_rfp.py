@@ -41,7 +41,6 @@ class PurchaseRFP(models.Model):
     _name = 'purchase.rfp'
     _description = 'Request for Purchase'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    # _mail_post_access = 'read'
     _order = 'create_date desc'
 
     name = fields.Char(
@@ -106,14 +105,13 @@ class PurchaseRFP(models.Model):
         groups="supplier_ms.group_approver,supplier_ms.group_reviewer"
     )
 
-    # Product Lines
+
     product_line_ids = fields.One2many(
         'purchase.rfp.product.line',
         'rfp_id',
         string='Product Lines'
     )
 
-    # Replace custom RFQ lines with purchase orders
     purchase_order_ids = fields.One2many(
         'purchase.order',
         'rfp_id',
@@ -133,14 +131,12 @@ class PurchaseRFP(models.Model):
         tracking=True
     )
 
-    # Add these fields
     quotation_count = fields.Integer(
         string='Quotation Count',
         compute='_compute_quotation_count',
         store=True
     )
 
-    # Add this computed field for counting
     rfp_count = fields.Integer(string='Count', compute='_compute_rfp_count', store=True)
 
     # # Add missing log access fields explicitly
@@ -149,10 +145,9 @@ class PurchaseRFP(models.Model):
     # write_uid = fields.Many2one('res.users', string='Last Updated by', readonly=True)
     # write_date = fields.Datetime(string='Last Updated on', readonly=True)
 
-    # Add state history field
     state_history = fields.One2many('purchase.rfp.state.history', 'rfp_id', string='State History')
 
-    # Add user_id field
+
     user_id = fields.Many2one(
         'res.users', 
         string='Created By',
@@ -161,7 +156,6 @@ class PurchaseRFP(models.Model):
         readonly=True
     )
 
-    # Add approver_id field
     approver_id = fields.Many2one(
         'res.users',
         string='Approver',
@@ -331,33 +325,33 @@ class PurchaseRFP(models.Model):
         self.ensure_one()
         if not self.env.user.has_group('supplier_ms.group_approver'):
             raise ValidationError(_("Only approvers can select suppliers."))
-            
+
         if self.state != 'approved':
             raise ValidationError(_("Can only select supplier for approved RFPs."))
-            
+
         if not self.approved_supplier_id:
             raise ValidationError(_("Please select a supplier first."))
 
         try:
             # Create PO
             po = self._create_purchase_order()
-            
+
             # Update RFP
             self.write({
                 'state': 'done',
                 'selected_po_id': po.id
             })
-            
+
             # Send notifications
             send_rfp_supplier_selected_notification(self.env, self, po)
-            
+
             # Send rejection notifications to other suppliers
             for quotation in self.quotation_ids.filtered(
                 lambda q: q.partner_id != self.approved_supplier_id
             ):
                 send_quotation_rejection_notification(
-                    self.env, 
-                    self, 
+                    self.env,
+                    self,
                     quotation.partner_id.email
                 )
 
@@ -596,11 +590,11 @@ class PurchaseRFP(models.Model):
             if rfp.state == 'accepted' and not rfp.state_history.filtered(lambda h: h.state == 'recommendation'):
                 raise ValidationError(_("RFP must be in recommendation state before acceptance."))
 
-    @api.constrains('state', 'approved_supplier_id')
-    def _check_approved_supplier(self):
-        for record in self:
-            if record.state == 'recommendation' and not record.approved_supplier_id:
-                raise ValidationError(_("An approved supplier must be selected in recommendation state."))
+    # @api.constrains('state', 'approved_supplier_id')
+    # def _check_approved_supplier(self):
+    #     for record in self:
+    #         if record.state == 'recommendation' and not record.approved_supplier_id:
+    #             raise ValidationError(_("An approved supplier must be selected in recommendation state."))
 
     @api.constrains('state', 'purchase_order_ids')
     def _check_recommendation_state(self):
